@@ -8,7 +8,7 @@ export default function Footer() {
                     </span>
 
                     <span class="text-sm font-medium eq-page-text">
-                        Made with ❤️ by the Equicord team
+                        This site is not affiliated with Equicord or Vencord.
                     </span>
                 </div>
             </div>
