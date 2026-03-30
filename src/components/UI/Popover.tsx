@@ -87,7 +87,7 @@ export default function Popover({
         >
             <div
                 onClick={!hover ? toggle : undefined}
-                class="flex cursor-pointer items-center hover:bg-neutral-900 py-2 px-3 rounded-xl gap-1 font-medium text-neutral-400 transition-colors hover:text-white"
+                class="eq-text-muted eq-hover-surface eq-hover-page-text flex cursor-pointer items-center gap-1 rounded-xl px-3 py-2 font-medium transition-colors"
             >
                 {trigger}
 
@@ -103,7 +103,7 @@ export default function Popover({
             <Show when={open()}>
                 <div
                     class={classNames(
-                        "absolute z-50 mt-2 rounded-2xl border border-neutral-800 bg-neutral-900 shadow-lg p-3 transition-all duration-200 ease-out",
+                        "absolute z-50 mt-2 rounded-2xl border eq-border eq-surface p-3 shadow-lg transition-all duration-200 ease-out",
                         visible()
                             ? "opacity-100 translate-y-0"
                             : "opacity-0 -translate-y-1",

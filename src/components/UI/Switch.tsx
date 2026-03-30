@@ -32,7 +32,7 @@ export default function Switch(props: Props) {
                 <Show when={local.icon}>{local.icon}</Show>
 
                 <Show when={local.label}>
-                    <span class="text-sm font-medium text-white">
+                    <span class="text-sm font-medium eq-page-text">
                         {local.label}
                     </span>
                 </Show>
@@ -40,9 +40,7 @@ export default function Switch(props: Props) {
 
             <div
                 class={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border transition-colors duration-200 ${
-                    isChecked()
-                        ? "border-green-500 bg-green-400"
-                        : "border-neutral-800 bg-neutral-950 group-hover:bg-neutral-900"
+                    isChecked() ? "eq-switch-on" : "eq-switch-off"
                 }`}
             >
                 <input
@@ -55,8 +53,8 @@ export default function Switch(props: Props) {
                 <span
                     class={`inline-block h-4 w-4 transform rounded-full shadow transition-all duration-200 ${
                         isChecked()
-                            ? "translate-x-6 bg-green-950"
-                            : "translate-x-1 bg-neutral-200"
+                            ? "translate-x-6 eq-switch-thumb-on"
+                            : "translate-x-1 eq-switch-thumb-off"
                     }`}
                 />
             </div>

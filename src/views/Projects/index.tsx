@@ -122,12 +122,12 @@ export default function Projects() {
                                             repo.full_name
                                         }
                                         target="_blank"
-                                        class="flex-1 min-w-full sm:min-w-96 flex flex-col justify-between gap-6 h-52 py-6 px-6 rounded-xl bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 transition-transform active:scale-[.98]"
+                                        class="flex-1 min-w-full sm:min-w-96 flex flex-col justify-between gap-6 h-52 py-6 px-6 rounded-xl bg-[var(--eq-surface)] border border-neutral-800 transition-transform active:scale-[.98]"
                                     >
                                         <div class="flex flex-col gap-3">
                                             <div class="flex justify-between items-center">
                                                 <div class="flex items-center gap-3">
-                                                    <div class="items-center justify-center bg-gradient-to-t from-neutral-900 to-neutral-800/90 outline-2 outline-offset-2 outline-neutral-600/50 flex size-10 rounded-lg border border-neutral-800">
+                                                    <div class="items-center justify-center bg-[var(--eq-surface-2)] outline-2 outline-offset-2 outline-neutral-600/50 flex size-10 rounded-lg border border-neutral-800">
                                                         <Book size={16} />
                                                     </div>
 

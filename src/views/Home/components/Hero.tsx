@@ -16,7 +16,7 @@ export default function HomeHero() {
         if (isWindows()) {
             return {
                 label: "Download for Windows",
-                href: "/download?platform=windows",
+                href: "https://equicord.org/download?platform=windows",
                 icon: <Fa icon={faWindows} class="!size-4" />,
             }
         }
@@ -24,7 +24,7 @@ export default function HomeHero() {
         if (isMac()) {
             return {
                 label: "Download for macOS",
-                href: "/download?platform=macos",
+                href: "https://equicord.org/download?platform=macos",
                 icon: <Fa icon={faApple} class="!size-4" />,
             }
         }
@@ -32,14 +32,14 @@ export default function HomeHero() {
         if (isLinux()) {
             return {
                 label: "Download for Linux",
-                href: "/download?platform=linux",
+                href: "https://equicord.org/download?platform=linux",
                 icon: <Fa icon={faLinux} class="!size-4" />,
             }
         }
 
         return {
             label: "Download",
-            href: "/download",
+            href: "https://equicord.org/download",
             icon: <Download size="16" />,
         }
     }
@@ -51,9 +51,9 @@ export default function HomeHero() {
     })
 
     return (
-        <div class="max-w-eq-lg mx-auto flex flex-col items-center px-6 pt-24">
-            <div class="flex max-w-[700px] flex-col items-center justify-center gap-4 text-center">
-                <h1 class="text-4xl font-bold text-white lg:text-7xl lg:leading-18">
+        <div class="min-h-[82vh] max-w-eq-lg mx-auto flex flex-col items-center justify-center px-6 py-16">
+            <div class="flex max-w-[720px] flex-col items-center justify-center gap-4 text-center">
+                <h1 class="text-4xl font-bold eq-page-text lg:text-7xl lg:leading-18">
                     <For each={headerWords}>
                         {(word, index) => (
                             <span
@@ -75,25 +75,25 @@ export default function HomeHero() {
                 </h1>
 
                 <p
-                    class="text-lg font-semibold text-neutral-400 transition-all duration-700 ease-out"
+                    class="text-lg font-semibold eq-text-muted transition-all duration-700 ease-out"
                     classList={{
                         "opacity-0 translate-y-10 blur-sm": !mounted(),
                         "opacity-100 translate-y-0 blur-0": mounted(),
                     }}
                     style={{ "transition-delay": "400ms" }}
                 >
-                    A fork that offers a wider selection of plugins from the
-                    community.
+                    A Vencord alternative with extra plugins, cloud sync, and
+                    active maintenance.
                 </p>
                 <p
-                    class="text-xs font-semibold text-neutral-400 transition-all duration-700 ease-out"
+                    class="text-xs font-semibold eq-text-muted-soft transition-all duration-700 ease-out"
                     classList={{
                         "opacity-0 translate-y-10 blur-sm": !mounted(),
                         "opacity-100 translate-y-0 blur-0": mounted(),
                     }}
                     style={{ "transition-delay": "400ms" }}
                 >
-                    The unstable fork of Vencord.
+                    Compare Vencord and Equicord below.
                 </p>
 
                 <div
@@ -110,26 +110,13 @@ export default function HomeHero() {
                         </Button>
                     </A>
 
-                    <span class="inline-flex items-center gap-1 text-xs font-bold text-neutral-400">
+                    <span class="inline-flex items-center gap-1 text-xs font-bold eq-text-muted">
                         Available on <Fa icon={faWindows} /> Windows,{" "}
                         <Fa icon={faApple} /> macOS and <Fa icon={faLinux} />{" "}
                         Linux.
                     </span>
                 </div>
             </div>
-
-            <img
-                src="/assets/home/settings.webp"
-                alt="Equicord Settings Interface"
-                loading="lazy"
-                class="mt-12 rounded-t-2xl mask-b-from-75% select-none transition-all duration-700 ease-out"
-                classList={{
-                    "opacity-0 scale-95 blur-md": !mounted(),
-                    "opacity-100 scale-100 blur-0": mounted(),
-                }}
-                style={{ "transition-delay": "800ms" }}
-                draggable="false"
-            />
         </div>
     )
 }

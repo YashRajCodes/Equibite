@@ -19,16 +19,16 @@ export default function Card({
         <div
             class={classNames(
                 customClass,
-                "flex w-full flex-col gap-2 rounded-2xl bg-neutral-900 p-6",
+                "eq-surface flex w-full flex-col gap-2 rounded-2xl border eq-border p-6",
             )}
         >
             <div class="flex items-center gap-3">
-                <span class="flex items-center gap-2 text-xl font-bold text-neutral-200">
-                    <Icon size="18" fill="#ffffff10" />
+                <span class="flex items-center gap-2 text-xl font-bold eq-page-text">
+                    <Icon size="18" fill="currentColor" />
                     {title}
                 </span>
             </div>
-            <p class="text-sm font-medium text-neutral-400">{excerpt}</p>
+            <p class="text-sm font-medium eq-text-muted">{excerpt}</p>
         </div>
     )
 }

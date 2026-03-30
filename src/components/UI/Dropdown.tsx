@@ -49,7 +49,7 @@ export default function Dropdown<T extends string | number = string>(
                 onClick={toggle}
                 aria-haspopup="listbox"
                 aria-expanded={open()}
-                class={`flex w-full cursor-pointer items-center gap-1 justify-between rounded-lg border border-neutral-800 px-3 py-3 font-medium transition-colors hover:bg-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${open() ? "bg-neutral-900 text-white" : "bg-neutral-950 text-neutral-400"}`}
+                class={`flex w-full cursor-pointer items-center justify-between gap-1 rounded-lg border eq-border px-3 py-3 font-medium transition-colors eq-hover-surface focus-visible:outline-none focus-visible:ring-2 eq-focus-ring-soft ${open() ? "eq-surface eq-page-text" : "eq-page-bg eq-text-muted"}`}
             >
                 <div class="flex flex-1 justify-between items-center gap-1">
                     <span class="flex items-center gap-1">
@@ -58,7 +58,7 @@ export default function Dropdown<T extends string | number = string>(
                     </span>
 
                     <Show when={props.selected}>
-                        <span class="rounded bg-green-400 px-2 py-0.5 text-xs font-semibold text-green-950">
+                        <span class="rounded eq-bg-accent-soft px-2 py-0.5 text-xs font-semibold eq-text-base">
                             {props.selected!.label}
                         </span>
                     </Show>
@@ -71,7 +71,7 @@ export default function Dropdown<T extends string | number = string>(
             <Show when={open()}>
                 <div
                     role="listbox"
-                    class="absolute z-50 mt-2 flex w-full flex-col divide-y divide-neutral-800 overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 shadow-lg"
+                    class="absolute z-50 mt-2 flex w-full flex-col divide-y eq-border overflow-hidden rounded-lg border eq-surface shadow-lg"
                 >
                     <For each={props.items}>
                         {(item) => (
@@ -80,7 +80,7 @@ export default function Dropdown<T extends string | number = string>(
                                 aria-selected={
                                     props.selected?.value === item.value
                                 }
-                                class="flex w-full cursor-pointer items-center gap-2 px-3 py-3 font-medium text-neutral-200 hover:bg-neutral-800/70 focus-visible:bg-neutral-800/70 focus-visible:outline-none transition-colors duration-150"
+                                class="flex w-full cursor-pointer items-center gap-2 px-3 py-3 font-medium eq-page-text transition-colors duration-150 eq-hover-surface-2 focus-visible:outline-none"
                                 onClick={() => handleSelect(item)}
                             >
                                 <Show when={item.icon}>{item.icon}</Show>

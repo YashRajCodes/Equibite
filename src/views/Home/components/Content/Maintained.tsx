@@ -40,34 +40,34 @@ function Commits() {
     const [commits] = createResource(fetchCommits)
 
     return (
-        <div class="flex h-64 border-l border-neutral-800 pl-4 sm:pl-8">
-            <div class="flex flex-col rounded-xl border border-neutral-800 bg-neutral-900 mask-b-from-80% md:w-72">
+        <div class="flex h-64 border-l eq-border pl-4 sm:pl-8">
+            <div class="eq-surface flex flex-col rounded-xl border eq-border mask-b-from-80% md:w-72">
                 <Show
                     when={commits() && commits()!.length > 0}
                     fallback={
-                        <div class="flex items-center justify-center h-full">
-                            <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-sky-500" />
+                        <div class="flex h-full items-center justify-center">
+                            <div class="h-6 w-6 animate-spin rounded-full border-b-2 eq-border-accent" />
                         </div>
                     }
                 >
                     <For each={commits()}>
                         {(commit) => (
-                            <div class="flex flex-col gap-1 border-b border-neutral-800 py-3 pr-6 pl-4">
+                            <div class="flex flex-col gap-1 border-b eq-border py-3 pr-6 pl-4">
                                 <span class="font-semibold">
                                     {truncateText(commit.commit.message)}
                                 </span>
 
-                                <p class="flex items-center gap-2 text-sm font-medium text-neutral-400">
+                                <p class="flex items-center gap-2 text-sm font-medium eq-text-muted">
                                     Committed{" "}
                                     {formatTimeAgo(commit.commit.author.date)}
                                     {isMergeCommit(commit.commit.message) ? (
                                         <Merge
-                                            class="text-purple-500"
+                                            class="eq-text-accent-soft"
                                             size={16}
                                         />
                                     ) : (
                                         <Check
-                                            class="text-green-500"
+                                            class="eq-text-accent"
                                             size={16}
                                         />
                                     )}
@@ -83,15 +83,15 @@ function Commits() {
 
 export default function FeatureMaintained() {
     return (
-        <div class="flex justify-between gap-6 max-md:flex-col md:flex-row-reverse">
-            <div class="flex w-full flex-col gap-6 rounded-xl bg-neutral-900 px-8 py-12 md:w-2/3 md:justify-between">
+        <div class="flex justify-between gap-6 max-md:flex-col">
+            <div class="eq-surface flex w-full flex-col gap-6 rounded-xl px-8 py-12 md:w-2/3 md:justify-between">
                 <div class="flex flex-col gap-2">
                     <span class="flex items-center gap-2 text-xl font-semibold">
-                        <TrafficCone fill="#ffffff10" size={24} />
+                        <TrafficCone class="eq-text-accent-soft" size={24} />
                         Actively Maintained
                     </span>
 
-                    <p class="font-medium text-neutral-400">
+                    <p class="font-medium eq-text-muted">
                         Active maintenance ensures every plugin remains safe and
                         compatible with any Discord changes.
                     </p>

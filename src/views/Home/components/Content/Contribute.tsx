@@ -4,10 +4,10 @@ import { Github } from "lucide-solid"
 
 export default function Contribute() {
     return (
-        <div class="relative flex flex-col gap-2 overflow-hidden rounded-xl border border-neutral-900 p-12">
+        <div class="relative flex flex-col gap-2 overflow-hidden rounded-xl border eq-border p-12">
             <h2 class="text-xl font-bold">Want to contribute?</h2>
 
-            <p class="font-medium text-neutral-400">
+            <p class="font-medium eq-text-muted">
                 Most submitted plugins are accepted, with plugin requests
                 actively handled to continuously expand the collection.
             </p>

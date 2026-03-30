@@ -28,25 +28,29 @@ const BrowseSections: BrowseSection[] = [
                 icon: () => <Puzzle size={20} />,
                 text: "Plugins",
                 description: "List of Equicord's third-party plugins",
-                href: "/plugins",
+                href: "https://equicord.org/plugins",
+                external: true,
             },
             {
                 icon: () => <Palette size={20} />,
                 text: "Themes",
                 description: "Browse Equicord's theme library",
-                href: "https://themes.equicord.org/",
+                href: "https://equicord.org/themes",
+                external: true,
             },
             {
                 icon: () => <BookMarked size={20} />,
                 text: "Projects",
                 description: "List of Equicord's active repositories",
-                href: "/projects",
+                href: "https://equicord.org/projects",
+                external: true,
             },
             {
                 icon: () => <CloudFog size={20} />,
                 text: "Cloud",
                 description: "About Equicord's cloud integration",
-                href: "/cloud",
+                href: "https://equicord.org/cloud",
+                external: true,
             },
         ],
     },
@@ -56,8 +60,9 @@ const BrowseSections: BrowseSection[] = [
             {
                 icon: () => <DownloadIcon size={20} />,
                 text: "Download",
-                description: "Download Equicord’s installer Equilotl",
-                href: "/download",
+                description: "Download Equicord's installer Equilotl",
+                href: "https://equicord.org/download",
+                external: true,
             },
             {
                 icon: () => <Book size={20} />,
@@ -105,7 +110,8 @@ const BrowseSections: BrowseSection[] = [
 const NavItems: NavItem[] = [
     {
         text: "Team",
-        href: "/team",
+        href: "https://equicord.org/team",
+        external: true,
     },
     {
         text: "Docs",
@@ -119,7 +125,7 @@ const DropdownItem = (props: { item: BrowseItem; onClick?: () => void }) => (
         href={props.item.href}
         target={props.item.external ? "_blank" : undefined}
         onClick={props.onClick}
-        class="relative group flex items-start gap-3 rounded-xl p-3 text-neutral-300 hover:text-white transition-colors duration-150"
+        class="relative group flex items-start gap-3 rounded-xl p-3 eq-page-text transition-colors duration-150"
     >
         <div class="flex items-center justify-center pt-2">
             {props.item.icon()}
@@ -127,12 +133,12 @@ const DropdownItem = (props: { item: BrowseItem; onClick?: () => void }) => (
 
         <div class="flex flex-1 flex-col">
             <h4 class="font-semibold">{props.item.text}</h4>
-            <p class="text-sm font-medium text-neutral-500 group-hover:text-neutral-400 transition-colors duration-150">
+            <p class="eq-group-hover-text-muted text-sm font-medium eq-text-muted transition-colors duration-150">
                 {props.item.description}
             </p>
         </div>
 
-        <div class="-z-10 absolute size-full inset-0 rounded-xl bg-neutral-800 opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-95 transition-all duration-150" />
+        <div class="-z-10 absolute inset-0 size-full scale-95 rounded-xl eq-surface-2 opacity-0 transition-all duration-150 group-hover:scale-100 group-hover:opacity-100" />
     </A>
 )
 
@@ -140,7 +146,7 @@ const NavLink = (props: { item: NavItem }) => (
     <A
         href={props.item.href}
         target={props.item.external ? "_blank" : undefined}
-        class="flex cursor-pointer items-center hover:bg-neutral-900 py-2 px-3 rounded-xl gap-1 font-medium text-neutral-400 transition-colors hover:text-white"
+        class="flex cursor-pointer items-center gap-1 rounded-xl px-3 py-2 font-medium eq-text-muted transition-colors eq-hover-surface eq-hover-page-text"
     >
         {props.item.text}
         {props.item.external && <ExternalLink size={16} />}
@@ -179,7 +185,7 @@ export default function Navbar() {
             {/* Mobile Menu */}
             <div
                 class={classNames(
-                    "fixed top-0 right-0 z-40 h-dvh w-80 flex-col overflow-y-scroll border-l border-l-neutral-800/50 bg-neutral-900 md:hidden transition-transform duration-300 ease-out",
+                    "fixed top-0 right-0 z-40 h-dvh w-80 flex-col overflow-y-scroll border-l eq-border eq-surface md:hidden transition-transform duration-300 ease-out",
                     showMobileMenu() ? "translate-x-0" : "translate-x-full",
                 )}
             >
@@ -204,7 +210,7 @@ export default function Navbar() {
                         )}
                     </For>
 
-                    <div class="flex flex-col gap-2 border-t border-neutral-800 pt-4">
+                    <div class="flex flex-col gap-2 border-t eq-border pt-4">
                         <For each={NavItems}>
                             {(item) => (
                                 <A
@@ -212,7 +218,7 @@ export default function Navbar() {
                                     target={
                                         item.external ? "_blank" : undefined
                                     }
-                                    class="flex items-center gap-1 rounded-xl p-3 font-bold hover:bg-neutral-800/50"
+                                    class="flex items-center gap-1 rounded-xl p-3 font-bold eq-hover-surface-2"
                                     onClick={() => toggleMobileMenu(false)}
                                 >
                                     {item.text}
@@ -225,7 +231,8 @@ export default function Navbar() {
 
                         <Show when={location.pathname !== "/download"}>
                             <A
-                                href="/download"
+                                href="https://equicord.org/download"
+                                target="_blank"
                                 onClick={() => toggleMobileMenu(false)}
                             >
                                 <Button
@@ -245,13 +252,13 @@ export default function Navbar() {
                 class={classNames(
                     "max-w-eq-lg z-30 mx-auto flex items-center justify-between px-6 py-8 transition-colors",
                     hasScrolled() &&
-                        "sticky top-0 bg-neutral-950/90 backdrop-blur-lg",
+                        "sticky top-0 eq-bg-overlay backdrop-blur-lg",
                 )}
             >
                 <div class="flex items-center gap-6">
                     <A
                         href="/"
-                        class="flex items-center gap-3 text-lg font-bold text-white transition-transform active:scale-[.95]"
+                        class="flex items-center gap-3 text-lg font-bold eq-page-text transition-transform active:scale-[.95]"
                     >
                         <img
                             src={
@@ -266,14 +273,14 @@ export default function Navbar() {
                         Equicord
                     </A>
 
-                    <hr class="max-lg:hidden border-r h-8 border-neutral-900" />
+                    <hr class="max-lg:hidden h-8 border-r eq-border" />
 
                     <div class="hidden items-center gap-3 lg:flex">
                         <For each={BrowseSections}>
                             {(section) => (
                                 <Popover
                                     trigger={
-                                        <span class="cursor-pointer text-neutral-400 hover:text-white transition-colors font-medium">
+                                        <span class="cursor-pointer font-medium eq-text-muted transition-colors eq-group-hover-page-text">
                                             {section.category}
                                         </span>
                                     }
@@ -297,7 +304,11 @@ export default function Navbar() {
                 </div>
 
                 <Show when={location.pathname !== "/download"}>
-                    <A href="/download" class="hidden md:flex">
+                    <A
+                        href="https://equicord.org/download"
+                        target="_blank"
+                        class="hidden md:flex"
+                    >
                         <Button icon={<Download size={16} />} variant="primary">
                             Download
                         </Button>
@@ -305,7 +316,7 @@ export default function Navbar() {
                 </Show>
 
                 <button
-                    class="z-50 flex size-12 flex-col items-center justify-center gap-1.5 rounded-xl md:hidden focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
+                    class="z-50 flex size-12 flex-col items-center justify-center gap-1.5 rounded-xl md:hidden focus-visible:outline-none focus-visible:ring-2 eq-focus-ring-soft"
                     onClick={() => toggleMobileMenu()}
                     aria-label="Toggle menu"
                     aria-expanded={showMobileMenu()}
@@ -313,19 +324,19 @@ export default function Navbar() {
                     <span
                         class={classNames(
                             showMobileMenu() && "translate-y-2 rotate-45",
-                            "h-0.5 w-5 rounded-full bg-neutral-200 transition-all",
+                            "h-0.5 w-5 rounded-full eq-bg-text transition-all",
                         )}
                     />
                     <span
                         class={classNames(
                             showMobileMenu() && "opacity-0",
-                            "h-0.5 w-5 rounded-full bg-neutral-200 transition-all",
+                            "h-0.5 w-5 rounded-full eq-bg-text transition-all",
                         )}
                     />
                     <span
                         class={classNames(
                             showMobileMenu() && "-translate-y-2 -rotate-45",
-                            "h-0.5 w-5 rounded-full bg-neutral-200 transition-all",
+                            "h-0.5 w-5 rounded-full eq-bg-text transition-all",
                         )}
                     />
                 </button>

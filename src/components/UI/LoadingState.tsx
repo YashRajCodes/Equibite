@@ -21,15 +21,15 @@ export default function LoadingState(props: LoadingStateProps) {
                         when={props.error}
                         fallback={
                             <div class="flex flex-col items-center gap-2">
-                                <div class="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-sky-500" />
-                                <p class="text-sm font-bold text-sky-200">
+                                <div class="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 eq-border-accent" />
+                                <p class="text-sm font-bold eq-page-text">
                                     {props.loadingText ?? "Loading"}
                                 </p>
                             </div>
                         }
                     >
                         <div class="flex flex-col items-center gap-2">
-                            <p class="text-sm font-bold text-red-400">
+                            <p class="text-sm font-bold eq-text-accent-soft">
                                 {props.errorText ?? "Failed to load"}
                             </p>
                             <Show when={props.onRetry}>

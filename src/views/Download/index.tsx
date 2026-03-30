@@ -358,10 +358,7 @@ export default function Download() {
                                 {section.platforms.map((platform) => (
                                     <div
                                         class={classNames(
-                                            "flex-1 xs:min-w-80 flex flex-col justify-between gap-4 py-6 px-6 rounded-xl border border-neutral-800",
-                                            platform.isCurrent
-                                                ? "bg-gradient-to-tl from-neutral-900 to-green-950"
-                                                : "bg-gradient-to-br from-neutral-900 to-neutral-950",
+                                            "flex-1 xs:min-w-80 flex flex-col justify-between gap-4 py-6 px-6 rounded-xl border border-neutral-800 bg-[var(--eq-surface)]",
                                         )}
                                     >
                                         <div class="flex flex-col gap-3">
@@ -375,7 +372,7 @@ export default function Download() {
                                                 </span>
 
                                                 {platform.isCurrent && (
-                                                    <span class="flex items-center gap-1 rounded-lg py-2 px-2 bg-gradient-to-r from-transparent to-green-900/50 text-green-200 text-sm font-medium">
+                                                    <span class="flex items-center gap-1 rounded-lg py-2 px-2 bg-green-900/50 text-green-200 text-sm font-medium">
                                                         <MonitorCheck
                                                             size={14}
                                                         />
@@ -523,7 +520,7 @@ export default function Download() {
                             <a
                                 href={offering.href}
                                 target="_blank"
-                                class="px-4 py-3 rounded-lg border border-neutral-800 bg-gradient-to-br from-neutral-900 to-neutral-950 hover:border-neutral-700 transition-colors"
+                                class="px-4 py-3 rounded-lg border border-neutral-800 bg-[var(--eq-surface)] hover:border-neutral-700 transition-colors"
                             >
                                 <span class="text-sm font-medium">
                                     {offering.name}

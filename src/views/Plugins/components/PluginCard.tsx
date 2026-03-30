@@ -24,7 +24,7 @@ export default function PluginCard(props: Props) {
             href={`/plugins/${props.name}`}
             class={classNames(
                 "relative flex w-full flex-col gap-3 rounded-xl border border-neutral-800",
-                "bg-linear-to-br from-neutral-900 to-neutral-950 p-6 transition-transform",
+                "bg-[var(--eq-surface)] p-6 transition-transform",
                 "active:scale-[.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
                 {
                     "pb-20": props.variant === "normal",
@@ -37,7 +37,7 @@ export default function PluginCard(props: Props) {
                 <div
                     class={classNames(
                         "hidden size-10 relative w-12 h-12 rounded-xl border border-neutral-800",
-                        "bg-gradient-to-t from-neutral-900 to-neutral-800/90 min-w-12",
+                        "bg-[var(--eq-surface-2)] min-w-12",
                         "outline-2 outline-offset-2 outline-neutral-600/50 md:flex",
                     )}
                 >

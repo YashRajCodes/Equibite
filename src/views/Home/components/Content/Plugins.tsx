@@ -20,7 +20,7 @@ function DiscordPlugin(props: PluginProps) {
     const [enabled, setEnabled] = createSignal<boolean>(false)
 
     return (
-        <div class="w-full max-w-92 rounded-xl bg-neutral-900 px-4 py-6 md:px-6">
+        <div class="eq-surface w-full max-w-92 rounded-xl px-4 py-6 md:px-6">
             <div class="flex items-center justify-between">
                 <h1 class="text-lg font-bold">{props.title}</h1>
 
@@ -30,9 +30,7 @@ function DiscordPlugin(props: PluginProps) {
                 />
             </div>
 
-            <p class="text-sm font-medium text-neutral-400">
-                {props.description}
-            </p>
+            <p class="text-sm font-medium eq-text-muted">{props.description}</p>
         </div>
     )
 }
@@ -61,16 +59,21 @@ export default function FeaturePlugins() {
 
     return (
         <div class="flex justify-between gap-6 max-md:flex-col">
-            <div class="flex w-full flex-col gap-6 rounded-xl bg-neutral-900 px-8 py-12 md:w-2/3 md:justify-between">
+            <div class="eq-surface flex w-full flex-col gap-6 rounded-xl px-8 py-12 md:w-2/3 md:justify-between">
                 <div class="flex flex-col gap-2">
                     <span class="flex items-center gap-2 text-xl font-semibold">
-                        <Puzzle fill="#ffffff10" size={24} />
+                        <Puzzle class="eq-text-accent-soft" size={24} />
                         Third-party plugins
                     </span>
 
-                    <p class="font-medium text-neutral-400">
+                    <p class="font-medium eq-text-muted">
                         Access a wide variety of plugins, including 150+ plugins
-                        alongside the existing ones in Vencord.
+                        beyond the base Vencord set.
+                    </p>
+                    <p class="text-sm font-medium eq-text-muted-soft">
+                        Equicord supports standard Vencord and BetterDiscord CSS
+                        themes, while giving you more plugins to customize the
+                        UI.
                     </p>
                 </div>
 

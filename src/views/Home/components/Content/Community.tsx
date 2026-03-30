@@ -6,10 +6,10 @@ import Fa from "solid-fa"
 
 export default function Community() {
     return (
-        <div class="relative flex flex-col gap-2 overflow-hidden rounded-xl border border-neutral-900 p-12">
+        <div class="relative flex flex-col gap-2 overflow-hidden rounded-xl border eq-border p-12">
             <h2 class="text-xl font-bold">Join our community!</h2>
 
-            <p class="font-medium text-neutral-400">
+            <p class="font-medium eq-text-muted">
                 We have an active community of people on Discord, join and stay
                 up to date with new updates and announcements!
             </p>
