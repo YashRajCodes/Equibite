@@ -14,4 +14,4 @@ export const CLIENT_MODS = [
     "velocity",
     "vencord",
     "vendetta",
-]
+];

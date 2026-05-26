@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import Button from "@components/UI/Button"
-import { faApple, faLinux, faWindows } from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { isLinux, isMac, isWindows } from "@utils/navigator"
-import { Download } from "lucide-react"
-import Link from "next/link"
-import type { ReactNode } from "react"
-import { useEffect, useState } from "react"
+import Button from "@components/UI/Button";
+import { faApple, faLinux, faWindows } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isLinux, isMac, isWindows } from "@utils/navigator";
+import { Download } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { ReactNode, useEffect, useState } from "react";
 
 function getPlatform(mounted: boolean): {
     label: string
@@ -19,45 +19,45 @@ function getPlatform(mounted: boolean): {
             label: "Download",
             href: "/download",
             icon: <Download size={16} />,
-        }
+        };
     }
     if (isWindows()) {
         return {
             label: "Download for Windows",
             href: "/download?platform=windows",
             icon: <FontAwesomeIcon icon={faWindows} className="size-4" />,
-        }
+        };
     }
     if (isMac()) {
         return {
             label: "Download for macOS",
             href: "/download?platform=macos",
             icon: <FontAwesomeIcon icon={faApple} className="size-4" />,
-        }
+        };
     }
     if (isLinux()) {
         return {
             label: "Download for Linux",
             href: "/download?platform=linux",
             icon: <FontAwesomeIcon icon={faLinux} className="size-4" />,
-        }
+        };
     }
     return {
         label: "Download",
         href: "/download",
         icon: <Download size={16} />,
-    }
+    };
 }
 
 export default function HomeHero() {
-    const [mounted, setMounted] = useState(false)
-    const headerWords = "An enhanced version of Vencord".split(" ")
+    const [mounted, setMounted] = useState(false);
+    const headerWords = "An enhanced version of Vencord".split(" ");
 
     useEffect(() => {
-        requestAnimationFrame(() => setMounted(true))
-    }, [])
+        requestAnimationFrame(() => setMounted(true));
+    }, []);
 
-    const platform = getPlatform(mounted)
+    const platform = getPlatform(mounted);
 
     return (
         <div className="max-w-eq-lg mx-auto flex flex-col items-center px-6 pt-24">
@@ -70,7 +70,7 @@ export default function HomeHero() {
                             "delay-[200ms]",
                             "delay-[300ms]",
                             "delay-[400ms]",
-                        ]
+                        ];
                         return (
                             <span
                                 key={index}
@@ -82,7 +82,7 @@ export default function HomeHero() {
                             >
                                 {word}
                             </span>
-                        )
+                        );
                     })}
                 </h1>
 
@@ -131,10 +131,12 @@ export default function HomeHero() {
                 </div>
             </div>
 
-            <img
+            <Image
                 src="/assets/home/settings.webp"
                 alt="Equicord Settings Interface"
-                loading="lazy"
+                width={2222}
+                height={1250}
+                priority
                 className={`mt-12 rounded-t-2xl mask-b-from-75% select-none transition-all duration-700 ease-out delay-800 ${
                     mounted
                         ? "opacity-100 scale-100 blur-0"
@@ -143,5 +145,5 @@ export default function HomeHero() {
                 draggable={false}
             />
         </div>
-    )
+    );
 }

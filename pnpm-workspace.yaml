@@ -1,7 +1,8 @@
-packages:
-    - "**"
-
+---
 allowBuilds:
-    "@tailwindcss/oxide": true
-    esbuild: true
-    sharp: true
+  '@tailwindcss/oxide': true
+  esbuild: true
+  sharp: true
+minimumReleaseAge: 0
+packages:
+  - '**'

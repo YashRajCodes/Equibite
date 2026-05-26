@@ -1,11 +1,11 @@
-import Button from "@components/UI/Button"
+import Button from "@components/UI/Button";
 import {
+    Cloud as CloudIcon,
     CloudDownload,
     CloudFog,
-    Cloud as CloudIcon,
     Monitor,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 function Cloud() {
     return (
@@ -29,7 +29,7 @@ function Cloud() {
                 </span>
             </div>
         </div>
-    )
+    );
 }
 
 export default function FeatureCloud() {
@@ -62,5 +62,5 @@ export default function FeatureCloud() {
                 <Cloud />
             </div>
         </div>
-    )
+    );
 }

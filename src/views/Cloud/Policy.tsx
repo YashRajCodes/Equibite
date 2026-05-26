@@ -1,6 +1,6 @@
-import PageBootstrap from "@components/PageBootstrap"
-import { Scroll } from "lucide-react"
-import Link from "next/link"
+import PageBootstrap from "@components/PageBootstrap";
+import { Scroll } from "lucide-react";
+import Link from "next/link";
 
 export default function CloudPolicy() {
     return (
@@ -169,5 +169,5 @@ export default function CloudPolicy() {
                 </div>
             </div>
         </PageBootstrap>
-    )
+    );
 }

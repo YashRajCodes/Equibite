@@ -1,7 +1,6 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
-import { useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react";
 
 interface Props {
     meta?: {
@@ -18,11 +17,11 @@ export default function SimpleBootstrap({
     title,
     children,
 }: Props) {
-    const [mounted, setMounted] = useState(false)
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        requestAnimationFrame(() => setMounted(true))
-    }, [])
+        requestAnimationFrame(() => setMounted(true));
+    }, []);
 
     return (
         <>
@@ -59,5 +58,5 @@ export default function SimpleBootstrap({
                 </div>
             </div>
         </>
-    )
+    );
 }

@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import Button from "@components/UI/Button"
-import Switch from "@components/UI/Switch"
+import Button from "@components/UI/Button";
+import Switch from "@components/UI/Switch";
 import {
     cleanDescription,
     fetchPlugins,
     getAvailabilityText,
     type Plugin,
-} from "@utils/plugin"
-import { Globe, Puzzle } from "lucide-react"
-import Link from "next/link"
-import { useEffect, useState } from "react"
+} from "@utils/plugin";
+import { Globe, Puzzle } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface PluginProps {
     title: string
@@ -18,7 +18,7 @@ interface PluginProps {
 }
 
 function DiscordPlugin({ title, description }: PluginProps) {
-    const [enabled, setEnabled] = useState(false)
+    const [enabled, setEnabled] = useState(false);
 
     return (
         <div className="w-full max-w-92 rounded-xl bg-neutral-900 px-4 py-6 md:px-6">
@@ -34,32 +34,32 @@ function DiscordPlugin({ title, description }: PluginProps) {
                 {description}
             </p>
         </div>
-    )
+    );
 }
 
 function getRandomPlugins(plugins: Plugin[], count: number): Plugin[] {
     const equicordPlugins = plugins.filter(
-        (p) =>
+        p =>
             p.filePath.toLowerCase().startsWith("src/equicordplugins") &&
             p.description &&
             p.description.length > 20 &&
             p.description.length < 150,
-    )
+    );
 
-    const shuffled = [...equicordPlugins].sort(() => Math.random() - 0.5)
-    return shuffled.slice(0, count)
+    const shuffled = [...equicordPlugins].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
 }
 
 export default function FeaturePlugins() {
-    const [randomPlugins, setRandomPlugins] = useState<Plugin[] | null>(null)
+    const [randomPlugins, setRandomPlugins] = useState<Plugin[] | null>(null);
 
     useEffect(() => {
-        fetchPlugins("equicord").then((list) => {
+        fetchPlugins("equicord").then(list => {
             if (list && list.length > 0) {
-                setRandomPlugins(getRandomPlugins(list, 2))
+                setRandomPlugins(getRandomPlugins(list, 2));
             }
-        })
-    }, [])
+        });
+    }, []);
 
     const fallbackPlugins = [
         {
@@ -72,14 +72,14 @@ export default function FeaturePlugins() {
             description:
                 "Shows activity icons in the member list and allows showing all activities. Available on all platforms.",
         },
-    ]
+    ];
 
     const displayPlugins = randomPlugins
-        ? randomPlugins.map((p) => ({
-              title: p.name,
-              description: `${cleanDescription(p.description)}. ${getAvailabilityText(p.name, p.required, p.target)}.`,
-          }))
-        : fallbackPlugins
+        ? randomPlugins.map(p => ({
+            title: p.name,
+            description: `${cleanDescription(p.description)}. ${getAvailabilityText(p.name, p.required, p.target)}.`,
+        }))
+        : fallbackPlugins;
 
     return (
         <div className="flex justify-between gap-6 max-md:flex-col">
@@ -118,5 +118,5 @@ export default function FeaturePlugins() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

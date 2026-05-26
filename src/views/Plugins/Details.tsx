@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Button from "@components/UI/Button"
-import LoadingState from "@components/UI/LoadingState"
-import { type Plugin, fetchPlugins, formatAuthors } from "@utils/plugin"
+import Button from "@components/UI/Button";
+import LoadingState from "@components/UI/LoadingState";
+import { fetchPlugins, formatAuthors,type Plugin } from "@utils/plugin";
 import {
     ArrowLeft,
     Braces,
@@ -15,11 +15,12 @@ import {
     Link as LinkIcon,
     Notebook,
     Users,
-} from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
-import toast from "react-hot-toast"
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
 const enum PluginSource {
     Equicord = "Equicord",
@@ -32,15 +33,15 @@ export const getPluginSource = (props: {
     filePath: string
     isModified: boolean
 }): PluginSource => {
-    const { filePath, isModified } = props
-    const lower = filePath.toLowerCase()
+    const { filePath, isModified } = props;
+    const lower = filePath.toLowerCase();
 
-    if (isModified) return PluginSource.Modified
-    if (lower.startsWith("src/equicordplugins")) return PluginSource.Equicord
-    if (lower.startsWith("src/plugins")) return PluginSource.Vencord
+    if (isModified) return PluginSource.Modified;
+    if (lower.startsWith("src/equicordplugins")) return PluginSource.Equicord;
+    if (lower.startsWith("src/plugins")) return PluginSource.Vencord;
 
-    return PluginSource.Unknown
-}
+    return PluginSource.Unknown;
+};
 
 interface PluginSourceProps {
     source: PluginSource
@@ -52,18 +53,26 @@ const pluginIcons: Record<PluginSource, string> = {
     [PluginSource.Vencord]: "/assets/icons/vencord/icon.webp",
     [PluginSource.Modified]: "/assets/icons/equicord/modified.webp",
     [PluginSource.Unknown]: "/assets/icons/misc/userplugin.webp",
-}
+};
 
 export function PluginSourceIcon({ size, source }: PluginSourceProps) {
-    const icon = pluginIcons[source]
+    const icon = pluginIcons[source];
 
     return (
         <span
-            className={`rounded-full py-0.5 font-semibold flex items-center gap-1`}
+            className={"rounded-full py-0.5 font-semibold flex items-center gap-1"}
         >
-            {icon && <img src={icon} className={`size-${size}`} alt={source} />}
+            {icon && (
+                <Image
+                    src={icon}
+                    width={size * 4}
+                    height={size * 4}
+                    className={`size-${size}`}
+                    alt={source}
+                />
+            )}
         </span>
-    )
+    );
 }
 
 export default function PluginDetails({
@@ -71,28 +80,28 @@ export default function PluginDetails({
 }: {
     params: { name: string }
 }) {
-    const router = useRouter()
-    const [plugins, setPlugins] = useState<Plugin[] | null>(null)
-    const [error, setError] = useState<Error | null>(null)
+    const router = useRouter();
+    const [plugins, setPlugins] = useState<Plugin[] | null>(null);
+    const [error, setError] = useState<Error | null>(null);
     const [activeTab, setActiveTab] = useState<"overview" | "commands">(
         "overview",
-    )
+    );
 
     useEffect(() => {
-        fetchPlugins("all").then(setPlugins).catch(setError)
-    }, [])
+        fetchPlugins("all").then(setPlugins).catch(setError);
+    }, []);
 
     const plugin = useMemo(
         () =>
             plugins?.find(
-                (p) => p.name.toLowerCase() === params.name?.toLowerCase(),
+                p => p.name.toLowerCase() === params.name?.toLowerCase(),
             ),
         [plugins, params.name],
-    )
+    );
 
     const copyLink = (plugin: Plugin) => {
-        const url = `https://equicord.org/plugins/${plugin.name}`
-        navigator.clipboard.writeText(url)
+        const url = `https://equicord.org/plugins/${plugin.name}`;
+        navigator.clipboard.writeText(url);
         toast.success("Copied Link", {
             className:
                 "border-1 !rounded-xl !bg-neutral-900 !text-white !font-medium border-neutral-800",
@@ -100,8 +109,8 @@ export default function PluginDetails({
                 primary: "#fff",
                 secondary: "var(--color-neutral-900)",
             },
-        })
-    }
+        });
+    };
 
     return (
         <>
@@ -114,9 +123,9 @@ export default function PluginDetails({
                     loadingText="Loading plugin"
                     errorText="Failed to load plugin"
                     onRetry={() => {
-                        setPlugins(null)
-                        setError(null)
-                        fetchPlugins("all").then(setPlugins).catch(setError)
+                        setPlugins(null);
+                        setError(null);
+                        fetchPlugins("all").then(setPlugins).catch(setError);
                     }}
                 >
                     {!plugin ? (
@@ -257,7 +266,7 @@ export default function PluginDetails({
                                     </h4>
 
                                     <div className="flex flex-col gap-3">
-                                        {plugin.commands.map((command) => (
+                                        {plugin.commands.map(command => (
                                             <div
                                                 key={command.name}
                                                 className="flex flex-col gap-2 border-b border-neutral-900 pb-3"
@@ -286,5 +295,5 @@ export default function PluginDetails({
                 </LoadingState>
             </div>
         </>
-    )
+    );
 }

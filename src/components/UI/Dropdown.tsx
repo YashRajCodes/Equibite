@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { ChevronDown, ChevronUp } from "lucide-react"
-import { type ReactNode, useEffect, useRef, useState } from "react"
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 export interface DropdownItem<T extends string | number = string> {
     label: string
@@ -24,30 +24,30 @@ export default function Dropdown<T extends string | number = string>({
     selected,
     onSelect,
 }: Props<T>) {
-    const [open, setOpen] = useState(false)
-    const containerRef = useRef<HTMLDivElement>(null)
+    const [open, setOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const toggle = () => setOpen((prev) => !prev)
-    const close = () => setOpen(false)
+    const toggle = () => setOpen(prev => !prev);
+    const close = () => setOpen(false);
 
     const handleClickOutside = (event: MouseEvent) => {
         if (
             containerRef.current &&
             !containerRef.current.contains(event.target as Node)
         ) {
-            close()
+            close();
         }
-    }
+    };
 
     const handleSelect = (item: DropdownItem<T>) => {
-        onSelect?.(item)
-        close()
-    }
+        onSelect?.(item);
+        close();
+    };
 
     useEffect(() => {
-        document.addEventListener("click", handleClickOutside)
-        return () => document.removeEventListener("click", handleClickOutside)
-    }, [])
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
 
     return (
         <div ref={containerRef} className="relative w-full">
@@ -79,7 +79,7 @@ export default function Dropdown<T extends string | number = string>({
                     aria-label="Options"
                     className="absolute z-50 mt-2 flex w-full flex-col divide-y divide-neutral-800 overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 shadow-lg"
                 >
-                    {items.map((item) => (
+                    {items.map(item => (
                         <button
                             key={String(item.value)}
                             role="option"
@@ -94,5 +94,5 @@ export default function Dropdown<T extends string | number = string>({
                 </div>
             )}
         </div>
-    )
+    );
 }

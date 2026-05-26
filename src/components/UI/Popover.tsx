@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import classNames from "classnames"
-import { ChevronUp } from "lucide-react"
-import { usePathname } from "next/navigation"
-import { type ReactNode, useEffect, useRef, useState } from "react"
+import classNames from "classnames";
+import { ChevronUp } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 interface Props {
     trigger: ReactNode
@@ -18,64 +18,64 @@ export default function Popover({
     hover,
     popoverClass,
 }: Props) {
-    const [open, setOpen] = useState(false)
-    const [visible, setVisible] = useState(false)
-    const pathname = usePathname()
-    const containerRef = useRef<HTMLDivElement>(null)
+    const [open, setOpen] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const pathname = usePathname();
+    const containerRef = useRef<HTMLDivElement>(null);
     const closeTimeoutRef = useRef<
         number | ReturnType<typeof setTimeout> | null
-    >(null)
-    const prevPathnameRef = useRef(pathname)
+    >(null);
+    const prevPathnameRef = useRef(pathname);
 
     useEffect(() => {
         if (pathname !== prevPathnameRef.current) {
-            prevPathnameRef.current = pathname
-            if (open) close()
+            prevPathnameRef.current = pathname;
+            if (open) close();
         }
-    }, [pathname])
+    }, [pathname]);
 
     useEffect(() => {
         if (open) {
-            requestAnimationFrame(() => setVisible(true))
+            requestAnimationFrame(() => setVisible(true));
         }
-    }, [open])
+    }, [open]);
 
     const openPopover = () => {
-        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
-        setOpen(true)
-    }
+        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        setOpen(true);
+    };
 
     const close = () => {
-        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
-        setVisible(false)
-        setTimeout(() => setOpen(false), 200)
-    }
+        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        setVisible(false);
+        setTimeout(() => setOpen(false), 200);
+    };
 
     const delayedClose = () => {
-        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
-        closeTimeoutRef.current = window.setTimeout(close, 20)
-    }
+        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = window.setTimeout(close, 20);
+    };
 
     const toggle = () => {
         if (open) {
-            close()
+            close();
         } else {
-            openPopover()
+            openPopover();
         }
-    }
+    };
 
     const handleClickOutside = (event: MouseEvent) => {
         if (
             containerRef.current &&
             !containerRef.current.contains(event.target as Node)
         )
-            close()
-    }
+            close();
+    };
 
     useEffect(() => {
-        document.addEventListener("click", handleClickOutside)
-        return () => document.removeEventListener("click", handleClickOutside)
-    }, [])
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
 
     return (
         <div
@@ -115,5 +115,5 @@ export default function Popover({
                 </div>
             )}
         </div>
-    )
+    );
 }

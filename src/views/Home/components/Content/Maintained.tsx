@@ -1,55 +1,56 @@
-"use client"
+"use client";
 
-import type { Commit } from "@/types"
-import Button from "@components/UI/Button"
-import { CacheKeys, CacheTTL, Urls } from "@constants"
-import { faGithub } from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { formatTimeAgo, truncateText } from "@utils/formatting"
-import { Check, Merge, TrafficCone } from "lucide-react"
-import Link from "next/link"
-import { useEffect, useState } from "react"
+import Button from "@components/UI/Button";
+import { CacheKeys, CacheTTL, Urls } from "@constants";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatTimeAgo, truncateText } from "@utils/formatting";
+import { Check, Merge, TrafficCone } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import type { Commit } from "@/types";
 
 async function fetchCommits(): Promise<Commit[]> {
     try {
-        const cached = localStorage.getItem(CacheKeys.COMMITS)
+        const cached = localStorage.getItem(CacheKeys.COMMITS);
         if (cached) {
-            const { timestamp, data } = JSON.parse(cached)
+            const { timestamp, data } = JSON.parse(cached);
             if (Date.now() - timestamp < CacheTTL.HALFHOUR) {
-                return data
+                return data;
             }
         }
     } catch {}
 
-    const res = await fetch(`${Urls.GITHUB_COMMITS}?per_page=4`)
-    if (!res.ok) return []
+    const res = await fetch(`${Urls.GITHUB_COMMITS}?per_page=4`);
+    if (!res.ok) return [];
 
-    const data: Commit[] = await res.json()
+    const data: Commit[] = await res.json();
 
     try {
         localStorage.setItem(
             CacheKeys.COMMITS,
             JSON.stringify({ timestamp: Date.now(), data }),
-        )
+        );
     } catch {}
 
-    return data
+    return data;
 }
 
 function isMergeCommit(message: string): boolean {
-    return message.toLowerCase().startsWith("merge")
+    return message.toLowerCase().startsWith("merge");
 }
 
 function Commits() {
-    const [commits, setCommits] = useState<Commit[]>([])
-    const [loading, setLoading] = useState(true)
+    const [commits, setCommits] = useState<Commit[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchCommits().then((data) => {
-            setCommits(data)
-            setLoading(false)
-        })
-    }, [])
+        fetchCommits().then(data => {
+            setCommits(data);
+            setLoading(false);
+        });
+    }, []);
 
     return (
         <div className="flex h-64 border-l border-neutral-800 pl-4 sm:pl-8">
@@ -59,7 +60,7 @@ function Commits() {
                         <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-sky-500" />
                     </div>
                 ) : (
-                    commits.map((commit) => (
+                    commits.map(commit => (
                         <div
                             key={commit.sha}
                             className="flex flex-col gap-1 border-b border-neutral-800 py-3 pr-6 pl-4"
@@ -88,7 +89,7 @@ function Commits() {
                 )}
             </div>
         </div>
-    )
+    );
 }
 
 export default function FeatureMaintained() {
@@ -130,5 +131,5 @@ export default function FeatureMaintained() {
                 <Commits />
             </div>
         </div>
-    )
+    );
 }

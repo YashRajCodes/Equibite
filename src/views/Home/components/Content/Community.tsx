@@ -1,7 +1,7 @@
-import Button from "@components/UI/Button"
-import { faDiscord } from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Link from "next/link"
+import Button from "@components/UI/Button";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 export default function Community() {
     return (
@@ -20,5 +20,5 @@ export default function Community() {
                 </Button>
             </Link>
         </div>
-    )
+    );
 }

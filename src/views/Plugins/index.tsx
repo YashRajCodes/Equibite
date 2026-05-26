@@ -1,161 +1,161 @@
-"use client"
+"use client";
 
-import PageBootstrap from "@components/PageBootstrap"
-import Input from "@components/UI/Input"
-import LoadingState from "@components/UI/LoadingState"
+import PageBootstrap from "@components/PageBootstrap";
+import Input from "@components/UI/Input";
+import LoadingState from "@components/UI/LoadingState";
 import {
     INITIAL_VISIBLE_COUNT,
     LOAD_MORE_COUNT,
     LOAD_MORE_THRESHOLD,
-} from "@constants"
-import type { Plugin } from "@utils/plugin"
-import { fetchPlugins } from "@utils/plugin"
-import { getStored, setStored } from "@utils/storage"
-import { Puzzle, Search, SearchX } from "lucide-react"
-import { useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import PluginCard from "./components/PluginCard"
-import PluginPopover from "./components/PluginPopover"
+} from "@constants";
+import { fetchPlugins, Plugin } from "@utils/plugin";
+import { getStored, setStored } from "@utils/storage";
+import { Puzzle, Search, SearchX } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-type PluginFilter = "all" | "equicord" | "vencord" | "modified"
+import PluginCard from "./components/PluginCard";
+import PluginPopover from "./components/PluginPopover";
+
+type PluginFilter = "all" | "equicord" | "vencord" | "modified";
 type PlatformFilter =
     | "all"
     | "dev"
     | "web"
     | "desktop"
     | "discordDesktop"
-    | "equibop"
+    | "equibop";
 
 export default function Plugins() {
-    const searchParams = useSearchParams()
-    const [plugins, setPlugins] = useState<Plugin[] | null>(null)
-    const [error, setError] = useState<Error | null>(null)
-    const [search, setSearch] = useState(searchParams.get("search") ?? "")
+    const searchParams = useSearchParams();
+    const [plugins, setPlugins] = useState<Plugin[] | null>(null);
+    const [error, setError] = useState<Error | null>(null);
+    const [search, setSearch] = useState(searchParams.get("search") ?? "");
     const [compactMode, setCompactMode] = useState(() =>
         getStored<boolean>("compactMode", true),
-    )
+    );
     const [pluginFilter, setPluginFilter] = useState<PluginFilter>(
         (searchParams.get("source") as PluginFilter) ?? "all",
-    )
+    );
     const [platformFilter, setPlatformFilter] = useState<PlatformFilter>(
         (searchParams.get("platform") as PlatformFilter) ?? "all",
-    )
+    );
     const [filterHasCommands, setFilterHasCommands] = useState(
         searchParams.get("commands") === "true",
-    )
-    const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT)
-    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    );
+    const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        fetchPlugins("all").then(setPlugins).catch(setError)
-    }, [])
+        fetchPlugins("all").then(setPlugins).catch(setError);
+    }, []);
 
     useEffect(() => {
-        setStored("compactMode", compactMode)
-    }, [compactMode])
+        setStored("compactMode", compactMode);
+    }, [compactMode]);
 
     const updateSearch = (value: string) => {
-        setSearch(value)
-        setVisibleCount(INITIAL_VISIBLE_COUNT)
-    }
+        setSearch(value);
+        setVisibleCount(INITIAL_VISIBLE_COUNT);
+    };
 
     const filteredPlugins = useMemo(() => {
-        if (!plugins) return []
+        if (!plugins) return [];
 
-        let result = [...plugins]
+        let result = [...plugins];
 
         const query = (
             Array.isArray(search) ? (search[0] ?? "") : (search ?? "")
         )
             .toLowerCase()
-            .trim()
+            .trim();
 
         if (query) {
-            result = result.filter((plugin) => {
-                const nameMatch = plugin.name.toLowerCase().includes(query)
-                const authorMatch = plugin.authors.some((author) =>
+            result = result.filter(plugin => {
+                const nameMatch = plugin.name.toLowerCase().includes(query);
+                const authorMatch = plugin.authors.some(author =>
                     author.name.toLowerCase().includes(query),
-                )
-                return nameMatch || authorMatch
-            })
+                );
+                return nameMatch || authorMatch;
+            });
         }
 
         switch (pluginFilter) {
             case "equicord":
-                result = result.filter((plugin) =>
+                result = result.filter(plugin =>
                     plugin.filePath
                         .toLowerCase()
                         .startsWith("src/equicordplugins"),
-                )
-                break
+                );
+                break;
             case "vencord":
-                result = result.filter((plugin) =>
+                result = result.filter(plugin =>
                     plugin.filePath.toLowerCase().startsWith("src/plugins"),
-                )
-                break
+                );
+                break;
             case "modified":
-                result = result.filter((plugin) => plugin.isModified)
-                break
+                result = result.filter(plugin => plugin.isModified);
+                break;
         }
 
         switch (platformFilter) {
             case "desktop":
-                result = result.filter((plugin) => plugin.target === "desktop")
-                break
+                result = result.filter(plugin => plugin.target === "desktop");
+                break;
             case "dev":
-                result = result.filter((plugin) => plugin.target === "dev")
-                break
+                result = result.filter(plugin => plugin.target === "dev");
+                break;
             case "discordDesktop":
                 result = result.filter(
-                    (plugin) => plugin.target === "discordDesktop",
-                )
-                break
+                    plugin => plugin.target === "discordDesktop",
+                );
+                break;
             case "equibop":
-                result = result.filter((plugin) => plugin.target === "equibop")
-                break
+                result = result.filter(plugin => plugin.target === "equibop");
+                break;
             case "web":
-                result = result.filter((plugin) => plugin.target === "web")
-                break
+                result = result.filter(plugin => plugin.target === "web");
+                break;
         }
 
         if (filterHasCommands) {
-            result = result.filter((plugin) => plugin.hasCommands)
+            result = result.filter(plugin => plugin.hasCommands);
         }
 
-        return result.sort((a, b) => a.name.localeCompare(b.name))
-    }, [plugins, search, pluginFilter, platformFilter, filterHasCommands])
+        return result.sort((a, b) => a.name.localeCompare(b.name));
+    }, [plugins, search, pluginFilter, platformFilter, filterHasCommands]);
 
     const visiblePlugins = useMemo(
         () => filteredPlugins.slice(0, visibleCount),
         [filteredPlugins, visibleCount],
-    )
-    const hasMorePlugins = visibleCount < filteredPlugins.length
+    );
+    const hasMorePlugins = visibleCount < filteredPlugins.length;
 
     const handleScroll = useCallback(() => {
-        if (scrollTimeoutRef.current) return
+        if (scrollTimeoutRef.current) return;
 
         scrollTimeoutRef.current = setTimeout(() => {
-            scrollTimeoutRef.current = null
+            scrollTimeoutRef.current = null;
 
-            const { innerHeight, scrollY } = window
-            const { offsetHeight } = document.body
+            const { innerHeight, scrollY } = window;
+            const { offsetHeight } = document.body;
 
             if (
                 innerHeight + scrollY >= offsetHeight - LOAD_MORE_THRESHOLD &&
                 hasMorePlugins
             ) {
-                setVisibleCount((count) => count + LOAD_MORE_COUNT)
+                setVisibleCount(count => count + LOAD_MORE_COUNT);
             }
-        }, 100)
-    }, [hasMorePlugins])
+        }, 100);
+    }, [hasMorePlugins]);
 
     useEffect(() => {
-        window.addEventListener("scroll", handleScroll, { passive: true })
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => {
-            window.removeEventListener("scroll", handleScroll)
-            if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current)
-        }
-    }, [handleScroll])
+            window.removeEventListener("scroll", handleScroll);
+            if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        };
+    }, [handleScroll]);
 
     return (
         <PageBootstrap
@@ -169,7 +169,7 @@ export default function Plugins() {
                 <Input
                     placeholder="Search plugins..."
                     value={search}
-                    onInput={(e) =>
+                    onInput={e =>
                         updateSearch((e.target as HTMLInputElement).value)
                     }
                     icon={<Search size={18} />}
@@ -194,9 +194,9 @@ export default function Plugins() {
                     loadingText="Loading plugins"
                     errorText="Failed to load plugins"
                     onRetry={() => {
-                        setPlugins(null)
-                        setError(null)
-                        fetchPlugins("all").then(setPlugins).catch(setError)
+                        setPlugins(null);
+                        setError(null);
+                        fetchPlugins("all").then(setPlugins).catch(setError);
                     }}
                 >
                     {filteredPlugins.length === 0 ? (
@@ -213,7 +213,7 @@ export default function Plugins() {
                     ) : (
                         <>
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                {visiblePlugins.map((plugin) => (
+                                {visiblePlugins.map(plugin => (
                                     <PluginCard
                                         key={plugin.name}
                                         variant={
@@ -238,5 +238,5 @@ export default function Plugins() {
                 </LoadingState>
             </main>
         </PageBootstrap>
-    )
+    );
 }

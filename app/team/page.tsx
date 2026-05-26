@@ -1,9 +1,9 @@
-import TeamView from "@views/Team"
+import TeamView from "@views/Team";
 
 export const metadata = {
     title: "Team",
-}
+};
 
 export default function TeamPage() {
-    return <TeamView />
+    return <TeamView />;
 }

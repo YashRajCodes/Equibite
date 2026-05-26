@@ -1,5 +1,5 @@
-import PageBootstrap from "@components/PageBootstrap"
-import { Scroll } from "lucide-react"
+import PageBootstrap from "@components/PageBootstrap";
+import { Scroll } from "lucide-react";
 
 export default function CloudGDPR() {
     return (
@@ -76,7 +76,7 @@ export default function CloudGDPR() {
                             "Right of restriction",
                             "Right to data portability",
                             "Right to withdraw consent",
-                        ].map((right) => (
+                        ].map(right => (
                             <li key={right} className="flex items-start gap-2">
                                 <span className="text-green-400 font-bold mt-1">
                                     •
@@ -161,5 +161,5 @@ export default function CloudGDPR() {
                 </div>
             </div>
         </PageBootstrap>
-    )
+    );
 }

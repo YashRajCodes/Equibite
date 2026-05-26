@@ -1,11 +1,7 @@
-"use client"
+"use client";
 
-import type { Platform, Section } from "@/types"
-import PageBootstrap from "@components/PageBootstrap"
-import Button from "@components/UI/Button"
-import classNames from "classnames"
-
-import { fetchEquibopVersion } from "@/utils"
+import PageBootstrap from "@components/PageBootstrap";
+import Button from "@components/UI/Button";
 import {
     faAndroid,
     faApple,
@@ -14,8 +10,8 @@ import {
     faFirefox,
     faLinux,
     faWindows,
-} from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+} from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     getMacArch,
     isAndroid,
@@ -24,9 +20,13 @@ import {
     isLinux,
     isMac,
     isWindows,
-} from "@utils/navigator"
-import { AlertCircle, DownloadIcon, MonitorCheck, Package } from "lucide-react"
-import { useEffect, useState } from "react"
+} from "@utils/navigator";
+import classNames from "classnames";
+import { AlertCircle, DownloadIcon, MonitorCheck, Package } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import type { Platform, Section } from "@/types";
+import { fetchEquibopVersion } from "@/utils";
 
 const EquicordPlatforms: Platform[] = [
     {
@@ -83,19 +83,19 @@ const EquicordPlatforms: Platform[] = [
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-darwin-arm64.zip",
-                prioritize: getMacArch() === "arm64" ? true : false,
+                prioritize: getMacArch() === "arm64",
                 note: "Apple Silicon (ARM64) Installer may work on Intel but is not recommended",
             },
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-darwin-x64.zip",
-                prioritize: getMacArch() === "x64" ? true : false,
+                prioritize: getMacArch() === "x64",
                 note: "Intel (X64) Installer may work on Apple Silicon but is not recommended",
             },
         ],
         isCurrent: isMac(),
     },
-]
+];
 
 const BrowserPlatforms: Platform[] = [
     {
@@ -147,7 +147,7 @@ const BrowserPlatforms: Platform[] = [
         ],
         isCurrent: false,
     },
-]
+];
 
 const getEquibopPlatforms = (version: string): Platform[] => [
     {
@@ -203,7 +203,7 @@ const getEquibopPlatforms = (version: string): Platform[] => [
         ],
         isCurrent: isMac(),
     },
-]
+];
 
 const EquidroidPlatforms: Platform[] = [
     {
@@ -266,7 +266,7 @@ const EquidroidPlatforms: Platform[] = [
             },
         ],
     },
-]
+];
 
 const OtherOfferings = [
     {
@@ -281,7 +281,7 @@ const OtherOfferings = [
     { name: "Goofcord", href: "https://github.com/Milkshiift/GoofCord" },
     { name: "Dorion", href: "https://github.com/SpikeHD/Dorion" },
     { name: "Shelter", href: "https://shelter.uwu.network" },
-]
+];
 
 const getSections = (version: string): Section[] => [
     {
@@ -316,14 +316,14 @@ const getSections = (version: string): Section[] => [
         globalWarning:
             "iOS isn't supported and unlikely to ever be supported. Please don't actually use Equidroid - use Kettu, Revenge, or Aliucord instead. Due to current limitations, we cannot provide support for Equidroid.",
     },
-]
+];
 
 export default function Download() {
-    const [version, setVersion] = useState<string | null>(null)
+    const [version, setVersion] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchEquibopVersion().then(setVersion)
-    }, [])
+        fetchEquibopVersion().then(setVersion);
+    }, []);
 
     return (
         <PageBootstrap
@@ -335,7 +335,7 @@ export default function Download() {
         >
             <div className="flex flex-col gap-12">
                 {version &&
-                    getSections(version).map((section) => (
+                    getSections(version).map(section => (
                         <div
                             key={section.title}
                             className="flex flex-col gap-4"
@@ -370,7 +370,7 @@ export default function Download() {
                             </div>
 
                             <div className="flex items-stretch flex-wrap gap-6">
-                                {section.platforms.map((platform) => (
+                                {section.platforms.map(platform => (
                                     <div
                                         key={platform.title}
                                         className={classNames(
@@ -415,7 +415,7 @@ export default function Download() {
 
                                         <div className="inline-flex items-start flex-wrap gap-3">
                                             {platform.downloads.map(
-                                                (download) => (
+                                                download => (
                                                     <div
                                                         key={
                                                             download.text +
@@ -477,7 +477,7 @@ export default function Download() {
 
                                         <div className="inline-flex items-center flex-wrap gap-3">
                                             {platform.subsection?.map(
-                                                (download) => (
+                                                download => (
                                                     <div
                                                         key={download.text}
                                                         className="flex-1 flex flex-col gap-1"
@@ -543,7 +543,7 @@ export default function Download() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {OtherOfferings.map((offering) => (
+                        {OtherOfferings.map(offering => (
                             <a
                                 key={offering.name}
                                 href={offering.href}
@@ -559,5 +559,5 @@ export default function Download() {
                 </div>
             </div>
         </PageBootstrap>
-    )
+    );
 }

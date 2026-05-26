@@ -1,7 +1,11 @@
 {
     "compilerOptions": {
-        "target": "ES2017",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "target": "esnext",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
         "allowJs": true,
         "skipLibCheck": true,
         "strict": true,
@@ -12,7 +16,6 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "react-jsx",
-        "incremental": true,
         "forceConsistentCasingInFileNames": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
@@ -22,25 +25,47 @@
                 "name": "next"
             }
         ],
-        "baseUrl": "src",
         "paths": {
-            "@/*": ["./*"],
-            "@index": ["./index"],
-            "@assets/*": ["./assets/*"],
-            "@components/*": ["./components/*"],
-            "@constants": ["./constants"],
-            "@constants/*": ["./constants/*"],
-            "@hooks/*": ["./hooks/*"],
-            "@utils/*": ["./utils/*"],
-            "@views/*": ["./views/*"]
-        }
+            "@/*": [
+                "./src/*"
+            ],
+            "@components/*": [
+                "./src/components/*"
+            ],
+            "@hooks/*": [
+                "./src/hooks/*"
+            ],
+            "@utils/*": [
+                "./src/utils/*"
+            ],
+            "@views/*": [
+                "./src/views/*"
+            ],
+            "@constants": [
+                "./src/constants"
+            ],
+            "@constants/*": [
+                "./src/constants/*"
+            ],
+            "@assets/*": [
+                "./src/assets/*"
+            ],
+            "@index": [
+                "./src/index"
+            ]
+        },
+        "incremental": true
     },
     "include": [
         "next-env.d.ts",
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
-        ".next/dev/types/**/*.ts"
+        "eslint.config.mjs",
+        ".next/dev/types/**/*.ts",
+        ".next/types/*.ts"
     ],
-    "exclude": ["node_modules"]
+    "exclude": [
+        "node_modules"
+    ]
 }

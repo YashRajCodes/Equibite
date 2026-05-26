@@ -1,115 +1,117 @@
-"use client"
+"use client";
 
-import type { DisplayImage, FolderImages, GitHubContent } from "@/types"
-import PageBootstrap from "@components/PageBootstrap"
-import Input from "@components/UI/Input"
-import LoadingState from "@components/UI/LoadingState"
-import { CacheKeys, CacheTTL, CLIENT_MODS, Urls } from "@constants"
+import PageBootstrap from "@components/PageBootstrap";
+import Input from "@components/UI/Input";
+import LoadingState from "@components/UI/LoadingState";
+import { CacheKeys, CacheTTL, CLIENT_MODS, Urls } from "@constants";
 import {
     capitalizeArtist,
     capitalizeWords,
     splitCamelCase,
-} from "@utils/formatting"
-import classNames from "classnames"
-import { Download, Image as ImageIcon, Search } from "lucide-react"
-import { useEffect, useMemo, useState } from "react"
-import toast from "react-hot-toast"
+} from "@utils/formatting";
+import classNames from "classnames";
+import { Download, Image as ImageIcon, Search } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+
+import type { DisplayImage, FolderImages, GitHubContent } from "@/types";
 
 function formatTitle(name: string): string {
-    const base = name.replace(/\.[^/.]+$/, "")
-    const parts = base.split("-")
+    const base = name.replace(/\.[^/.]+$/, "");
+    const parts = base.split("-");
 
     if (parts.length === 2) {
-        return `${capitalizeWords(splitCamelCase(parts[0]))} by ${capitalizeArtist(parts[1])}`
+        return `${capitalizeWords(splitCamelCase(parts[0]))} by ${capitalizeArtist(parts[1])}`;
     }
 
-    return capitalizeWords(splitCamelCase(base))
+    return capitalizeWords(splitCamelCase(base));
 }
 
 function formatFolderName(name: string): string {
-    return capitalizeWords(splitCamelCase(name))
+    return capitalizeWords(splitCamelCase(name));
 }
 
 async function fetchImagesRecursiveInternal(
     apiUrl: string,
     currentFolder = "",
 ): Promise<FolderImages[]> {
-    const res = await fetch(apiUrl)
-    if (!res.ok) return []
+    const res = await fetch(apiUrl);
+    if (!res.ok) return [];
 
-    const data: GitHubContent[] = await res.json()
-    const folders = new Map<string, DisplayImage[]>()
+    const data: GitHubContent[] = await res.json();
+    const folders = new Map<string, DisplayImage[]>();
 
     for (const item of data) {
         if (item.type === "file" && item.download_url) {
-            const title = formatTitle(item.name)
+            const title = formatTitle(item.name);
 
             if (!folders.has(currentFolder)) {
-                folders.set(currentFolder, [])
+                folders.set(currentFolder, []);
             }
 
-            folders.get(currentFolder)!.push({ title, url: item.download_url })
+            folders.get(currentFolder)!.push({ title, url: item.download_url });
         } else if (item.type === "dir") {
             const subFolders = await fetchImagesRecursiveInternal(
                 item.url,
                 item.name,
-            )
+            );
             subFolders.forEach(({ folder, images }) => {
                 if (!folders.has(folder)) {
-                    folders.set(folder, [])
+                    folders.set(folder, []);
                 }
-                folders.get(folder)!.push(...images)
-            })
+                folders.get(folder)!.push(...images);
+            });
         }
     }
 
     return Array.from(folders.entries()).map(([folder, images]) => ({
         folder,
         images,
-    }))
+    }));
 }
 
 async function fetchImagesRecursive(apiUrl: string): Promise<FolderImages[]> {
     try {
-        const cached = localStorage.getItem(CacheKeys.ICONS)
+        const cached = localStorage.getItem(CacheKeys.ICONS);
         if (cached) {
-            const { timestamp, data } = JSON.parse(cached)
+            const { timestamp, data } = JSON.parse(cached);
             if (Date.now() - timestamp < CacheTTL.SIXHOURS) {
-                return data
+                return data;
             }
         }
     } catch {}
 
-    const data = await fetchImagesRecursiveInternal(apiUrl)
+    const data = await fetchImagesRecursiveInternal(apiUrl);
 
     try {
         localStorage.setItem(
             CacheKeys.ICONS,
             JSON.stringify({ timestamp: Date.now(), data }),
-        )
+        );
     } catch {}
 
-    return data
+    return data;
 }
 
 const downloadIcon = async (url: string, title: string) => {
     try {
-        const response = await fetch(url)
-        const blob = await response.blob()
-        const blobUrl = window.URL.createObjectURL(blob)
-        const link = document.createElement("a")
-        link.href = blobUrl
-        link.download = title.replace(/\s+/g, "_") + ".png"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        window.URL.revokeObjectURL(blobUrl)
-        toast.success(`Downloaded ${title}`)
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = title.replace(/\s+/g, "_") + ".png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+        toast.success(`Downloaded ${title}`);
     } catch (error) {
-        console.error("Failed to download icon:", error)
-        toast.error("Failed to download icon")
+        console.error("Failed to download icon:", error);
+        toast.error("Failed to download icon");
     }
-}
+};
 
 function IconCard({ title, url }: { title: string; url: string }) {
     return (
@@ -120,12 +122,14 @@ function IconCard({ title, url }: { title: string; url: string }) {
             )}
         >
             <div className="relative w-full aspect-square">
-                <img
+                <Image
                     src={url}
                     alt={title}
-                    loading="lazy"
-                    className="w-full h-full object-contain rounded-lg cursor-pointer"
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
+                    className="object-contain rounded-lg cursor-pointer"
                     onClick={() => window.open(url, "_blank")}
+                    unoptimized
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-200 rounded-lg flex items-center justify-center">
                     <button
@@ -141,49 +145,49 @@ function IconCard({ title, url }: { title: string; url: string }) {
                 {title}
             </span>
         </div>
-    )
+    );
 }
 
 export default function Icons() {
-    const [folders, setFolders] = useState<FolderImages[]>([])
-    const [searchQuery, setSearchQuery] = useState("")
-    const [loading, setLoading] = useState(true)
+    const [folders, setFolders] = useState<FolderImages[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchImagesRecursive(Urls.GITHUB_ICONS).then((images) => {
+        fetchImagesRecursive(Urls.GITHUB_ICONS).then(images => {
             images.sort((a, b) => {
-                if (a.folder === "equicord") return -1
-                if (b.folder === "equicord") return 1
-                if (a.folder === "") return 1
-                if (b.folder === "") return -1
-                if (CLIENT_MODS.includes(a.folder)) return 1
-                if (CLIENT_MODS.includes(b.folder)) return -1
-                return a.folder.localeCompare(b.folder)
-            })
+                if (a.folder === "equicord") return -1;
+                if (b.folder === "equicord") return 1;
+                if (a.folder === "") return 1;
+                if (b.folder === "") return -1;
+                if (CLIENT_MODS.includes(a.folder)) return 1;
+                if (CLIENT_MODS.includes(b.folder)) return -1;
+                return a.folder.localeCompare(b.folder);
+            });
 
-            setFolders(images)
-            setLoading(false)
-        })
-    }, [])
+            setFolders(images);
+            setLoading(false);
+        });
+    }, []);
 
     const filteredFolders = useMemo(() => {
-        const query = searchQuery.toLowerCase()
-        if (!query) return folders
+        const query = searchQuery.toLowerCase();
+        if (!query) return folders;
 
         return folders
-            .map((folder) => ({
+            .map(folder => ({
                 ...folder,
-                images: folder.images.filter((img) =>
+                images: folder.images.filter(img =>
                     img.title.toLowerCase().includes(query),
                 ),
             }))
-            .filter((folder) => folder.images.length > 0)
-    }, [folders, searchQuery])
+            .filter(folder => folder.images.length > 0);
+    }, [folders, searchQuery]);
 
     const totalIcons = folders.reduce(
         (acc, folder) => acc + folder.images.length,
         0,
-    )
+    );
 
     return (
         <PageBootstrap
@@ -205,7 +209,7 @@ export default function Icons() {
                                 type="text"
                                 placeholder="Search icons..."
                                 value={searchQuery}
-                                onInput={(e) =>
+                                onInput={e =>
                                     setSearchQuery(
                                         (e.target as HTMLInputElement).value,
                                     )
@@ -236,7 +240,7 @@ export default function Icons() {
                     ) : (
                         <div className="flex flex-col gap-16">
                             {filteredFolders
-                                .filter((f) => !CLIENT_MODS.includes(f.folder))
+                                .filter(f => !CLIENT_MODS.includes(f.folder))
                                 .map(({ folder, images }) => (
                                     <div
                                         key={folder}
@@ -265,7 +269,7 @@ export default function Icons() {
                                     </div>
                                 ))}
 
-                            {filteredFolders.some((f) =>
+                            {filteredFolders.some(f =>
                                 CLIENT_MODS.includes(f.folder),
                             ) && (
                                 <div className="flex flex-col gap-6">
@@ -273,7 +277,7 @@ export default function Icons() {
                                         Client Mods
                                     </h2>
                                     {filteredFolders
-                                        .filter((f) =>
+                                        .filter(f =>
                                             CLIENT_MODS.includes(f.folder),
                                         )
                                         .map(({ folder, images }) => (
@@ -312,5 +316,5 @@ export default function Icons() {
                 </LoadingState>
             </div>
         </PageBootstrap>
-    )
+    );
 }

@@ -1,7 +1,7 @@
-import Button from "@components/UI/Button"
-import { faGithub } from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import Link from "next/link"
+import Button from "@components/UI/Button";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 export default function Contribute() {
     return (
@@ -30,5 +30,5 @@ export default function Contribute() {
 
             <div className="absolute inset-0 -z-10 h-96 w-full -translate-y-44 bg-[url(/assets/grid.svg)] mask-radial-[50%_50%] mask-radial-from-0% mask-radial-at-center bg-repeat opacity-5 md:-translate-x-30 md:-translate-y-32" />
         </div>
-    )
+    );
 }

@@ -26,4 +26,4 @@ export const Urls = {
 
     LANYARD_API: "https://lanyard.equicord.org/v1",
     LANYARD_WS: "wss://lanyard.equicord.org/socket",
-}
+};

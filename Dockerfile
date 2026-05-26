@@ -5,8 +5,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-COPY package*.json pnpm-*.yaml ./
-COPY patches ./patches
+COPY package.json pnpm-*.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
@@ -15,14 +14,15 @@ RUN pnpm build
 FROM node:lts-alpine
 WORKDIR /app
 
+ENV NODE_ENV=production
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-COPY package*.json pnpm-*.yaml ./
-COPY patches ./patches
-COPY vite.config.ts ./vite.config.ts
+COPY package.json pnpm-*.yaml ./
 RUN pnpm install --prod --frozen-lockfile
-COPY --from=build /app/dist ./dist
+
+COPY --from=build /app/public ./public
+COPY --from=build /app/.next ./.next
 
 CMD ["pnpm", "start"]

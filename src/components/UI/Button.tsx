@@ -1,7 +1,7 @@
-import classNames from "classnames"
-import type { ButtonHTMLAttributes, ReactNode } from "react"
+import classNames from "classnames";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-export type ButtonVariant = "primary" | "secondary" | "blue" | "red"
+export type ButtonVariant = "primary" | "secondary" | "blue" | "red";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant: ButtonVariant
@@ -36,5 +36,5 @@ export default function Button({
             {icon && <span className="shrink-0">{icon}</span>}
             {children}
         </button>
-    )
+    );
 }

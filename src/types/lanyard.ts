@@ -12,7 +12,7 @@ export interface Activity {
     details?: string
 }
 
-export type DiscordStatus = "online" | "idle" | "dnd" | "offline"
+export type DiscordStatus = "online" | "idle" | "dnd" | "offline";
 
 export interface LanyardUser {
     discord_user: {
@@ -61,8 +61,8 @@ export interface LanyardInitStateMessage {
 export type LanyardIncomingMessage =
     | LanyardHelloMessage
     | LanyardPresenceUpdateMessage
-    | LanyardInitStateMessage
+    | LanyardInitStateMessage;
 
 export type LanyardOutgoingMessage =
     | LanyardInitMessage
-    | LanyardHeartbeatMessage
+    | LanyardHeartbeatMessage;

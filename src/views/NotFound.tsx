@@ -1,7 +1,7 @@
-import SimpleBootstrap from "@components/SimpleBootstrap"
-import Button from "@components/UI/Button"
-import { ArrowLeft, Flower2 } from "lucide-react"
-import Link from "next/link"
+import SimpleBootstrap from "@components/SimpleBootstrap";
+import Button from "@components/UI/Button";
+import { ArrowLeft, Flower2 } from "lucide-react";
+import Link from "next/link";
 
 const Texts: string[] = [
     "Looks like you've lost your map!",
@@ -10,10 +10,10 @@ const Texts: string[] = [
     "Hey! Oh yeah, this page doesn't exist.",
     "Naibuu was here.",
     "Thor took this path away.",
-]
+];
 
 export default function NotFound() {
-    const text = Texts[Math.floor(Math.random() * Texts.length)]
+    const text = Texts[Math.floor(Math.random() * Texts.length)];
 
     return (
         <SimpleBootstrap icon={<Flower2 size={72} />} title={text}>
@@ -27,5 +27,5 @@ export default function NotFound() {
                 </Button>
             </Link>
         </SimpleBootstrap>
-    )
+    );
 }

@@ -1,9 +1,9 @@
-import FeatureCloud from "./Cloud"
-import Community from "./Community"
-import Contribute from "./Contribute"
-import FeatureMaintained from "./Maintained"
-import FeaturePlugins from "./Plugins"
-import Policy from "./Policy"
+import FeatureCloud from "./Cloud";
+import Community from "./Community";
+import Contribute from "./Contribute";
+import FeatureMaintained from "./Maintained";
+import FeaturePlugins from "./Plugins";
+import Policy from "./Policy";
 
 export default function HomeContent() {
     return (
@@ -30,5 +30,5 @@ export default function HomeContent() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

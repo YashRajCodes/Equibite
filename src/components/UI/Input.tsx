@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode } from "react"
+import type { InputHTMLAttributes, ReactNode } from "react";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
     icon?: ReactNode
@@ -14,5 +14,5 @@ export default function Input({ icon, className, ...rest }: Props) {
                 className={`w-full bg-transparent text-sm font-medium text-white placeholder-neutral-600 outline-none ${className ?? ""}`}
             />
         </div>
-    )
+    );
 }

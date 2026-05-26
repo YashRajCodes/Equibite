@@ -1,5 +1,5 @@
-import NotFoundView from "@views/NotFound"
+import NotFoundView from "@views/NotFound";
 
 export default function NotFound() {
-    return <NotFoundView />
+    return <NotFoundView />;
 }

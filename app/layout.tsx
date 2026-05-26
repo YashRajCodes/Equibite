@@ -1,9 +1,10 @@
-import Footer from "@components/Layout/Footer"
-import Navbar from "@components/Layout/Navbar"
-import type { Metadata } from "next"
-import type { ReactNode } from "react"
-import { Toaster } from "react-hot-toast"
-import "./globals.css"
+import "./globals.css";
+
+import Footer from "@components/Layout/Footer";
+import Navbar from "@components/Layout/Navbar";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
     title: {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
         siteName: "Equicord",
         type: "website",
     },
-}
+};
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
@@ -28,5 +29,5 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 <Footer />
             </body>
         </html>
-    )
+    );
 }

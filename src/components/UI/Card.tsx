@@ -1,6 +1,6 @@
-import classNames from "classnames"
-import type { LucideProps } from "lucide-react"
-import type { ComponentType } from "react"
+import classNames from "classnames";
+import type { LucideProps } from "lucide-react";
+import type { ComponentType } from "react";
 
 interface Props {
     customClass?: string
@@ -30,5 +30,5 @@ export default function Card({
             </div>
             <p className="text-sm font-medium text-neutral-400">{excerpt}</p>
         </div>
-    )
+    );
 }

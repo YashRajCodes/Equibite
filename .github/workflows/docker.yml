@@ -1,38 +1,28 @@
-name: Build and Push Docker Image
-
-on:
-    push:
-        branches: ["main"]
-        tags: ["v*"]
-
+---
 env:
-    REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.repository }}
-
+  IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: ghcr.io
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
-
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v6
-
-            - name: Log in to Container Registry
-              uses: docker/login-action@v4
-              with:
-                  registry: ${{ env.REGISTRY }}
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Extract metadata
-              id: meta
-              uses: docker/metadata-action@v6
-              with:
-                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-                  tags: |
+  build:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Log in to Container Registry
+        uses: docker/login-action@v4
+        with:
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+      - id: meta
+        name: Extract metadata
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
                       type=ref,event=branch
                       type=ref,event=pr
                       type=semver,pattern={{version}}
@@ -40,19 +30,23 @@ jobs:
                       type=semver,pattern={{major}}
                       type=raw,value=latest,enable={{is_default_branch}}
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v4
-
-            - name: Build and push Docker image
-              uses: docker/build-push-action@v7
-              with:
-                  context: .
-                  platforms: linux/amd64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.meta.outputs.tags }}
-                  labels: ${{ steps.meta.outputs.labels }}
-                  annotations: ${{ steps.meta.outputs.annotations }}
-                  cache-from: type=gha
-                  cache-to: type=gha,mode=max
-                  provenance: true
-                  sbom: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          context: .
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64
+          provenance: true
+          push: ${{ github.event_name != 'pull_request' }}
+          sbom: true
+          tags: ${{ steps.meta.outputs.tags }}
+name: Build and Push Docker Image
+'on':
+  push:
+    branches: ["main"]
+    tags: ["v*"]

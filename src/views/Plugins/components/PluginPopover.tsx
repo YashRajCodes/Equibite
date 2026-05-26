@@ -1,19 +1,20 @@
-"use client"
+"use client";
 
-import Button from "@components/UI/Button"
-import Dropdown from "@components/UI/Dropdown"
-import Switch from "@components/UI/Switch"
-import { Blocks, Braces, Cog, Monitor } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import Button from "@components/UI/Button";
+import Dropdown from "@components/UI/Dropdown";
+import Switch from "@components/UI/Switch";
+import { Blocks, Braces, Cog, Monitor } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
-type PluginFilterValue = "all" | "equicord" | "vencord" | "modified"
+type PluginFilterValue = "all" | "equicord" | "vencord" | "modified";
 type PlatformFilterValue =
     | "all"
     | "dev"
     | "web"
     | "desktop"
     | "discordDesktop"
-    | "equibop"
+    | "equibop";
 
 interface Props {
     pluginFilter: PluginFilterValue
@@ -33,15 +34,17 @@ const Platforms = [
     { label: "Discord App", value: "discordDesktop" as const },
     { label: "Equibop", value: "equibop" as const },
     { label: "Dev Build", value: "dev" as const },
-]
+];
 
 const Sources = [
     { label: "All", value: "all" as const },
     {
         label: "Vencord",
         icon: (
-            <img
+            <Image
                 src="/assets/icons/vencord/icon.webp"
+                width={24}
+                height={24}
                 className="size-6 select-none"
                 alt="Vencord"
             />
@@ -51,8 +54,10 @@ const Sources = [
     {
         label: "Equicord",
         icon: (
-            <img
+            <Image
                 src="/assets/icons/equicord/icon-far.webp"
+                width={24}
+                height={24}
                 className="size-6 select-none"
                 alt="Equicord"
             />
@@ -62,15 +67,17 @@ const Sources = [
     {
         label: "Modified",
         icon: (
-            <img
+            <Image
                 src="/assets/icons/equicord/modified.webp"
+                width={24}
+                height={24}
                 className="size-6 select-none"
                 alt="Equicord"
             />
         ),
         value: "modified" as const,
     },
-]
+];
 
 export default function PluginPopover({
     pluginFilter,
@@ -82,21 +89,21 @@ export default function PluginPopover({
     compactMode,
     setCompactMode,
 }: Props) {
-    const [open, setOpen] = useState(false)
-    const containerRef = useRef<HTMLDivElement>(null)
+    const [open, setOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    const toggle = () => setOpen((prev) => !prev)
-    const close = () => setOpen(false)
+    const toggle = () => setOpen(prev => !prev);
+    const close = () => setOpen(false);
 
     const handleClickOutside = (event: MouseEvent) => {
-        const target = event.target as HTMLElement
-        if (!target.closest(".popover-container")) close()
-    }
+        const target = event.target as HTMLElement;
+        if (!target.closest(".popover-container")) close();
+    };
 
     useEffect(() => {
-        document.addEventListener("click", handleClickOutside)
-        return () => document.removeEventListener("click", handleClickOutside)
-    }, [])
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
 
     return (
         <div
@@ -117,7 +124,7 @@ export default function PluginPopover({
                         icon={<Blocks size={16} />}
                         label="Compact Mode"
                         checked={compactMode}
-                        onChange={(e) =>
+                        onChange={e =>
                             setCompactMode(e.currentTarget.checked)
                         }
                     />
@@ -126,43 +133,43 @@ export default function PluginPopover({
                         icon={<Braces size={16} />}
                         label="Has Commands"
                         checked={filterHasCommands}
-                        onChange={(e) =>
+                        onChange={e =>
                             setFilterHasCommands(e.currentTarget.checked)
                         }
                     />
 
                     <Dropdown<PluginFilterValue>
                         icon={<Blocks size={16} />}
-                        items={Sources.map((item) => ({
+                        items={Sources.map(item => ({
                             icon: item.icon,
                             label: item.label,
                             value: item.value,
                         }))}
                         selected={
                             Sources.find(
-                                (item) => item.value === pluginFilter,
+                                item => item.value === pluginFilter,
                             ) ?? null
                         }
-                        onSelect={(item) => setPluginFilter(item.value)}
+                        onSelect={item => setPluginFilter(item.value)}
                         placeholder="Source"
                     />
 
                     <Dropdown<PlatformFilterValue>
                         icon={<Monitor size={16} />}
-                        items={Platforms.map((item) => ({
+                        items={Platforms.map(item => ({
                             label: item.label,
                             value: item.value,
                         }))}
                         selected={
                             Platforms.find(
-                                (item) => item.value === platformFilter,
+                                item => item.value === platformFilter,
                             ) ?? null
                         }
-                        onSelect={(item) => setPlatformFilter(item.value)}
+                        onSelect={item => setPlatformFilter(item.value)}
                         placeholder="Platform"
                     />
                 </div>
             )}
         </div>
-    )
+    );
 }

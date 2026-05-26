@@ -1,25 +1,26 @@
-"use client"
+"use client";
 
 import {
-    type Plugin,
     cleanDescription,
     formatAuthors,
     getAvailabilityText,
-} from "@utils/plugin"
-import classNames from "classnames"
-import { Puzzle, Users } from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import { getPluginSource, PluginSourceIcon } from "../Details"
+    type Plugin,
+} from "@utils/plugin";
+import classNames from "classnames";
+import { Puzzle, Users } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+
+import { getPluginSource, PluginSourceIcon } from "../Details";
 
 interface Props extends Plugin {
     variant: CardVariant
 }
 
-type CardVariant = "compact" | "normal"
+type CardVariant = "compact" | "normal";
 
 export default function PluginCard(props: Props) {
-    const [hovered, setHovered] = useState(false)
+    const [hovered, setHovered] = useState(false);
 
     return (
         <Link
@@ -90,10 +91,10 @@ export default function PluginCard(props: Props) {
             {props.variant === "normal" &&
                 props.hasCommands &&
                 props.commands.length > 0 && (
-                    <p className="absolute bottom-6 text-sm font-medium">
-                        Click to view commands.
-                    </p>
-                )}
+                <p className="absolute bottom-6 text-sm font-medium">
+                    Click to view commands.
+                </p>
+            )}
         </Link>
-    )
+    );
 }

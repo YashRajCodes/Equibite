@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
-import classNames from "classnames"
-import type { ReactNode } from "react"
-import { useEffect, useState } from "react"
+import classNames from "classnames";
+import { ReactNode, useEffect, useState } from "react";
 
 interface Props {
     meta?: {
@@ -23,11 +22,11 @@ export default function PageBootstrap({
     description,
     children,
 }: Props) {
-    const [mounted, setMounted] = useState(false)
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        requestAnimationFrame(() => setMounted(true))
-    }, [])
+        requestAnimationFrame(() => setMounted(true));
+    }, []);
 
     return (
         <>
@@ -53,5 +52,5 @@ export default function PageBootstrap({
                 {children}
             </div>
         </>
-    )
+    );
 }

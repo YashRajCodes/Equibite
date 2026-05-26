@@ -1,6 +1,7 @@
-import { RotateCcw } from "lucide-react"
-import type { ReactNode } from "react"
-import Button from "./Button"
+import { RotateCcw } from "lucide-react";
+import type { ReactNode } from "react";
+
+import Button from "./Button";
 
 interface LoadingStateProps {
     loading: boolean
@@ -20,7 +21,7 @@ export default function LoadingState({
     children,
 }: LoadingStateProps) {
     if (!loading && !error) {
-        return <>{children}</>
+        return <>{children}</>;
     }
 
     return (
@@ -49,5 +50,5 @@ export default function LoadingState({
                 </div>
             )}
         </div>
-    )
+    );
 }

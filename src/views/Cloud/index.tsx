@@ -1,13 +1,13 @@
-import PageBootstrap from "@components/PageBootstrap"
-import Button from "@components/UI/Button"
+import PageBootstrap from "@components/PageBootstrap";
+import Button from "@components/UI/Button";
 import {
     CloudFog,
     Link as LinkIcon,
     Rabbit,
     RefreshCcw,
     Scroll,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 export default function Cloud() {
     return (
@@ -91,5 +91,5 @@ export default function Cloud() {
                 </Link>
             </div>
         </PageBootstrap>
-    )
+    );
 }

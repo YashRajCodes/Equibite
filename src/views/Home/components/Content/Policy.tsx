@@ -1,6 +1,6 @@
-import Button from "@components/UI/Button"
-import { Scroll } from "lucide-react"
-import Link from "next/link"
+import Button from "@components/UI/Button";
+import { Scroll } from "lucide-react";
+import Link from "next/link";
 
 export default function Policy() {
     return (
@@ -21,5 +21,5 @@ export default function Policy() {
                 </Button>
             </Link>
         </div>
-    )
+    );
 }

@@ -17,8 +17,8 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "format": "eslint . --fix",
-        "lint": "eslint ."
+        "lint": "eslint .",
+        "lint:fix": "pnpm lint --fix"
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "^16.2.6",

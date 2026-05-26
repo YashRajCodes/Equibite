@@ -1,11 +1,10 @@
-"use client"
+"use client";
 
-import type { BrowseItem, BrowseSection, NavItem } from "@/types"
-import Button from "@components/UI/Button"
-import Popover from "@components/UI/Popover"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons"
-import classNames from "classnames"
+import Button from "@components/UI/Button";
+import Popover from "@components/UI/Popover";
+import { faDiscord, faGithub } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import {
     Book,
     BookMarked,
@@ -17,10 +16,13 @@ import {
     Paintbrush,
     Palette,
     Puzzle,
-} from "lucide-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import type { BrowseItem, BrowseSection, NavItem } from "@/types";
 
 const BrowseSections: BrowseSection[] = [
     {
@@ -102,7 +104,7 @@ const BrowseSections: BrowseSection[] = [
             },
         ],
     },
-]
+];
 
 const NavItems: NavItem[] = [
     {
@@ -114,7 +116,7 @@ const NavItems: NavItem[] = [
         href: "https://docs.equicord.org",
         external: true,
     },
-]
+];
 
 function DropdownItem({ item, onClick }: { item: BrowseItem; onClick?: () => void }) {
     return (
@@ -135,7 +137,7 @@ function DropdownItem({ item, onClick }: { item: BrowseItem; onClick?: () => voi
 
             <div className="-z-10 absolute size-full inset-0 rounded-xl bg-neutral-800 opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-95 transition-all duration-150" />
         </Link>
-    )
+    );
 }
 
 function NavLink({ item }: { item: NavItem }) {
@@ -148,39 +150,39 @@ function NavLink({ item }: { item: NavItem }) {
             {item.text}
             {item.external && <ExternalLink size={16} />}
         </Link>
-    )
+    );
 }
 
 export default function Navbar() {
-    const pathname = usePathname()
-    const [showMobileMenu, setShowMobileMenu] = useState(false)
-    const [hasScrolled, setHasScrolled] = useState(false)
+    const pathname = usePathname();
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [hasScrolled, setHasScrolled] = useState(false);
 
     const toggleMobileMenu = (force?: boolean) => {
-        const next = force ?? !showMobileMenu
-        setShowMobileMenu(next)
-        document.body.style.overflowY = next ? "hidden" : "auto"
-    }
+        const next = force ?? !showMobileMenu;
+        setShowMobileMenu(next);
+        document.body.style.overflowY = next ? "hidden" : "auto";
+    };
 
-    const handleScroll = () => setHasScrolled(window.scrollY > 0)
+    const handleScroll = () => setHasScrolled(window.scrollY > 0);
 
     useEffect(() => {
-        window.addEventListener("scroll", handleScroll)
+        window.addEventListener("scroll", handleScroll);
         return () => {
-            window.removeEventListener("scroll", handleScroll)
-            document.body.style.overflowY = "auto"
-        }
-    }, [])
+            window.removeEventListener("scroll", handleScroll);
+            document.body.style.overflowY = "auto";
+        };
+    }, []);
 
     useEffect(() => {
-        setShowMobileMenu(false)
-        document.body.style.overflowY = "auto"
-    }, [pathname])
+        setShowMobileMenu(false);
+        document.body.style.overflowY = "auto";
+    }, [pathname]);
 
     const logoSrc =
         Math.random() < 1 / 1_000_000
             ? "/assets/icons/equicord/icon-old.webp"
-            : "/assets/favicon.webp"
+            : "/assets/favicon.webp";
 
     return (
         <>
@@ -198,10 +200,10 @@ export default function Navbar() {
                 )}
             >
                 <div className="flex flex-col gap-6 p-6 pt-20">
-                    {BrowseSections.map((section) => (
+                    {BrowseSections.map(section => (
                         <div key={section.category} className="flex flex-col">
                             <div className="mb-2 font-bold">{section.category}</div>
-                            {section.items.map((item) => (
+                            {section.items.map(item => (
                                 <DropdownItem
                                     key={item.text}
                                     item={item}
@@ -212,7 +214,7 @@ export default function Navbar() {
                     ))}
 
                     <div className="flex flex-col gap-2 border-t border-neutral-800 pt-4">
-                        {NavItems.map((item) => (
+                        {NavItems.map(item => (
                             <Link
                                 key={item.text}
                                 href={item.href}
@@ -251,8 +253,10 @@ export default function Navbar() {
                         href="/"
                         className="flex items-center gap-3 text-lg font-bold text-white transition-transform active:scale-[.95]"
                     >
-                        <img
+                        <Image
                             src={logoSrc}
+                            width={32}
+                            height={32}
                             className="size-8 select-none"
                             draggable={false}
                             alt="Equicord logo"
@@ -263,7 +267,7 @@ export default function Navbar() {
                     <hr className="max-lg:hidden border-r h-8 border-neutral-900" />
 
                     <div className="hidden items-center gap-3 lg:flex">
-                        {BrowseSections.map((section) => (
+                        {BrowseSections.map(section => (
                             <Popover
                                 key={section.category}
                                 trigger={
@@ -274,14 +278,14 @@ export default function Navbar() {
                                 popoverClass="left-1/2 -translate-x-1/3 w-[240px] p-3"
                             >
                                 <div className="flex flex-col gap-2">
-                                    {section.items.map((item) => (
+                                    {section.items.map(item => (
                                         <DropdownItem key={item.text} item={item} />
                                     ))}
                                 </div>
                             </Popover>
                         ))}
 
-                        {NavItems.map((item) => (
+                        {NavItems.map(item => (
                             <NavLink key={item.text} item={item} />
                         ))}
                     </div>
@@ -299,7 +303,7 @@ export default function Navbar() {
                     className="z-50 flex size-12 flex-col items-center justify-center gap-1.5 rounded-xl md:hidden focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-none"
                     onClick={() => toggleMobileMenu()}
                     aria-label="Toggle menu"
-                    aria-expanded={showMobileMenu ? "true" : "false"}
+                    aria-expanded={showMobileMenu}
                 >
                     <span
                         className={classNames(
@@ -322,5 +326,5 @@ export default function Navbar() {
                 </button>
             </header>
         </>
-    )
+    );
 }

@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import {
     type ChangeEvent,
     type InputHTMLAttributes,
     type ReactNode,
     useState,
-} from "react"
+} from "react";
 
 interface Props extends Omit<
     InputHTMLAttributes<HTMLInputElement>,
@@ -24,12 +24,12 @@ export default function Switch({
     onChange,
     ...rest
 }: Props) {
-    const [isChecked, setIsChecked] = useState(!!checked)
+    const [isChecked, setIsChecked] = useState(!!checked);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setIsChecked(event.currentTarget.checked)
-        onChange?.(event)
-    }
+        setIsChecked(event.currentTarget.checked);
+        onChange?.(event);
+    };
 
     return (
         <label
@@ -67,5 +67,5 @@ export default function Switch({
                 />
             </div>
         </label>
-    )
+    );
 }
