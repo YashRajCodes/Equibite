@@ -118,7 +118,7 @@ const NavItems: NavItem[] = [
     },
 ];
 
-function DropdownItem({ item, onClick }: { item: BrowseItem; onClick?: () => void }) {
+function DropdownItem({ item, onClick }: { item: BrowseItem; onClick?: () => void; }) {
     return (
         <Link
             href={item.href}
@@ -140,7 +140,7 @@ function DropdownItem({ item, onClick }: { item: BrowseItem; onClick?: () => voi
     );
 }
 
-function NavLink({ item }: { item: NavItem }) {
+function NavLink({ item }: { item: NavItem; }) {
     return (
         <Link
             href={item.href}
@@ -181,8 +181,8 @@ export default function Navbar() {
 
     const logoSrc =
         Math.random() < 1 / 1_000_000
-            ? "/assets/icons/equicord/icon-old.webp"
-            : "/assets/favicon.webp";
+            ? "/assets/icons/equicord/icon-old.png"
+            : "/assets/favicon.png";
 
     return (
         <>

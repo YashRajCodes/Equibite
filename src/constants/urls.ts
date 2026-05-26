@@ -6,8 +6,7 @@ export const Urls = {
     VENCORD_PLUGINS_URL:
         "https://raw.githubusercontent.com/Equicord/Equibored/main/vencordplugins.json",
 
-    EQUIBOP_VERSION_URL:
-        "https://raw.githubusercontent.com/Equicord/Equibite/refs/heads/main/public/version",
+    EQUIBOP_VERSION_URL: "/version",
     TEAM_JSON_URL:
         "https://raw.githubusercontent.com/Equicord/Equibite/refs/heads/main/public/team.json",
     FAQ_JSON_URL:
