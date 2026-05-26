@@ -2,7 +2,7 @@
 
 import Button from "@components/UI/Button";
 import LoadingState from "@components/UI/LoadingState";
-import { fetchPlugins, formatAuthors,type Plugin } from "@utils/plugin";
+import { fetchPlugins, formatAuthors, type Plugin } from "@utils/plugin";
 import {
     ArrowLeft,
     Braces,
@@ -30,8 +30,8 @@ const enum PluginSource {
 }
 
 export const getPluginSource = (props: {
-    filePath: string
-    isModified: boolean
+    filePath: string;
+    isModified: boolean;
 }): PluginSource => {
     const { filePath, isModified } = props;
     const lower = filePath.toLowerCase();
@@ -44,12 +44,12 @@ export const getPluginSource = (props: {
 };
 
 interface PluginSourceProps {
-    source: PluginSource
-    size: number
+    source: PluginSource;
+    size: number;
 }
 
 const pluginIcons: Record<PluginSource, string> = {
-    [PluginSource.Equicord]: "/assets/icons/equicord/icon.webp",
+    [PluginSource.Equicord]: "/assets/icons/equicord/icon.png",
     [PluginSource.Vencord]: "/assets/icons/vencord/icon.webp",
     [PluginSource.Modified]: "/assets/icons/equicord/modified.webp",
     [PluginSource.Unknown]: "/assets/icons/misc/userplugin.webp",
@@ -78,7 +78,7 @@ export function PluginSourceIcon({ size, source }: PluginSourceProps) {
 export default function PluginDetails({
     params,
 }: {
-    params: { name: string }
+    params: { name: string; };
 }) {
     const router = useRouter();
     const [plugins, setPlugins] = useState<Plugin[] | null>(null);
@@ -114,7 +114,7 @@ export default function PluginDetails({
 
     return (
         <>
-            <title>Plugins | Equicord</title>
+            <title>{plugin ? `${plugin.name} | Equicord` : "Plugins | Equicord"}</title>
 
             <div className="max-w-eq-lg mx-auto flex flex-col gap-6 px-6 py-12">
                 <LoadingState
@@ -164,7 +164,7 @@ export default function PluginDetails({
                                     <div className="flex size-16 items-center justify-center rounded-xl border border-neutral-800 bg-linear-to-t from-neutral-900 to-neutral-800/90 outline-2 outline-offset-2 outline-neutral-600/50">
                                         <PluginSourceIcon
                                             source={getPluginSource(plugin)}
-                                            size={10}
+                                            size={12}
                                         />
                                     </div>
 

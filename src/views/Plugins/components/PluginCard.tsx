@@ -14,7 +14,7 @@ import { useState } from "react";
 import { getPluginSource, PluginSourceIcon } from "../Details";
 
 interface Props extends Plugin {
-    variant: CardVariant
+    variant: CardVariant;
 }
 
 type CardVariant = "compact" | "normal";
@@ -90,11 +90,13 @@ export default function PluginCard(props: Props) {
 
             {props.variant === "normal" &&
                 props.hasCommands &&
-                props.commands.length > 0 && (
-                <p className="absolute bottom-6 text-sm font-medium">
-                    Click to view commands.
-                </p>
-            )}
+                props.commands.length > 0 &&
+                (
+                    <p className="absolute bottom-6 text-sm font-medium">
+                        Click to view commands.
+                    </p>
+                )
+            }
         </Link>
     );
 }

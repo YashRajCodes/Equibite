@@ -17,14 +17,14 @@ type PlatformFilterValue =
     | "equibop";
 
 interface Props {
-    pluginFilter: PluginFilterValue
-    setPluginFilter: (value: PluginFilterValue) => void
-    platformFilter: PlatformFilterValue
-    setPlatformFilter: (value: PlatformFilterValue) => void
-    filterHasCommands: boolean
-    setFilterHasCommands: (value: boolean) => void
-    compactMode: boolean
-    setCompactMode: (value: boolean) => void
+    pluginFilter: PluginFilterValue;
+    setPluginFilter: (value: PluginFilterValue) => void;
+    platformFilter: PlatformFilterValue;
+    setPlatformFilter: (value: PlatformFilterValue) => void;
+    filterHasCommands: boolean;
+    setFilterHasCommands: (value: boolean) => void;
+    compactMode: boolean;
+    setCompactMode: (value: boolean) => void;
 }
 
 const Platforms = [
@@ -55,7 +55,7 @@ const Sources = [
         label: "Equicord",
         icon: (
             <Image
-                src="/assets/icons/equicord/icon-far.webp"
+                src="/assets/icons/equicord/icon.png"
                 width={24}
                 height={24}
                 className="size-6 select-none"

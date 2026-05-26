@@ -5,13 +5,13 @@ import { ReactNode, useEffect, useState } from "react";
 
 interface Props {
     meta?: {
-        title: string
-    }
-    icon?: ReactNode
-    fullWidth?: boolean
-    title: string
-    description: string
-    children?: ReactNode
+        title: string;
+    };
+    icon?: ReactNode;
+    fullWidth?: boolean;
+    title: string;
+    description: string;
+    children?: ReactNode;
 }
 
 export default function PageBootstrap({
@@ -30,7 +30,7 @@ export default function PageBootstrap({
 
     return (
         <>
-            {meta?.title && <title>{meta.title} | Equicord</title>}
+            {meta?.title && <title>{`${meta.title} | Equicord`}</title>}
             <div
                 className={classNames(
                     fullWidth ? "max-w-eq-lg" : "max-w-eq-sm",

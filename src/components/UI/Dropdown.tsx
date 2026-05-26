@@ -4,17 +4,17 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
 export interface DropdownItem<T extends string | number = string> {
-    label: string
-    value: T
-    icon?: ReactNode
+    label: string;
+    value: T;
+    icon?: ReactNode;
 }
 
 interface Props<T extends string | number = string> {
-    icon?: ReactNode
-    items: DropdownItem<T>[]
-    placeholder?: string
-    selected?: DropdownItem<T> | null
-    onSelect?: (item: DropdownItem<T>) => void
+    icon?: ReactNode;
+    items: DropdownItem<T>[];
+    placeholder?: string;
+    selected?: DropdownItem<T> | null;
+    onSelect?: (item: DropdownItem<T>) => void;
 }
 
 export default function Dropdown<T extends string | number = string>({
