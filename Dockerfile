@@ -12,7 +12,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-FROM node:lts-alpine as runner
+FROM node:lts-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
