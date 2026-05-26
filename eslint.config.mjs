@@ -109,7 +109,6 @@ export default defineConfig(
             "simple-import-sort/exports": "error",
             "unused-imports/no-unused-imports": "error",
 
-            // Original rules
             "no-multiple-empty-lines": ["error", { max: 1, maxBOF: 0, maxEOF: 0 }],
             "no-console": "off",
             "consistent-return": "off",
