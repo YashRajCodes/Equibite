@@ -6,7 +6,6 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 COPY package.json pnpm-*.yaml ./
-RUN ls -la
 RUN pnpm install --frozen-lockfile
 
 COPY . .
@@ -21,7 +20,6 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 COPY package.json pnpm-*.yaml ./
-RUN ls -la
 RUN pnpm install --prod --frozen-lockfile
 
 COPY --from=build /app/public ./public
