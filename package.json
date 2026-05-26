@@ -20,6 +20,7 @@
         "lint": "eslint .",
         "lint:fix": "pnpm lint --fix"
     },
+    "packageManager": "pnpm@11.3.0",
     "devDependencies": {
         "@next/eslint-plugin-next": "^16.2.6",
         "@stylistic/eslint-plugin": "^5.10.0",
