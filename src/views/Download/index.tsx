@@ -255,14 +255,8 @@ const EquidroidPlatforms: Platform[] = [
         subtext: "Alternatives for IOS",
         subsection: [
             {
-                text: "BTLoader",
-                href: "https://github.com/CloudySn0w/BTLoader/releases",
-                note: "Use if Non-Jailbroken",
-            },
-            {
                 text: "Kettu",
                 href: "https://github.com/C0C0B01/KettuTweak/releases",
-                note: "Use if Jailbroken",
             },
         ],
     },
@@ -434,7 +428,7 @@ export default function Download() {
                                                                 <Button
                                                                     variant={
                                                                         platform.isCurrent &&
-                                                                        download.prioritize
+                                                                            download.prioritize
                                                                             ? "primary"
                                                                             : "secondary"
                                                                     }
@@ -489,7 +483,7 @@ export default function Download() {
                                                             <Button
                                                                 variant={
                                                                     platform.isCurrent &&
-                                                                    download.prioritize
+                                                                        download.prioritize
                                                                         ? "primary"
                                                                         : "secondary"
                                                                 }
