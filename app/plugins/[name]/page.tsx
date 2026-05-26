@@ -8,7 +8,14 @@ export async function generateMetadata({ params }: { params: Promise<{ name: str
         const plugins = await fetchPlugins("all");
         const plugin = plugins.find(p => p.name.toLowerCase() === resolvedParams.name?.toLowerCase());
 
-        if (!plugin) return {};
+        if (!plugin) {
+            return {
+                title: "Plugin Not Found",
+                description: null,
+                openGraph: null,
+                twitter: null,
+            };
+        }
 
         const lower = plugin.filePath.toLowerCase();
         let iconUrl = "/assets/icons/equicord/icon-128.png";
