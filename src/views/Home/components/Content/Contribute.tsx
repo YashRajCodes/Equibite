@@ -1,5 +1,6 @@
 import Button from "@components/UI/Button"
-import { Github } from "lucide-react"
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Link from "next/link"
 
 export default function Contribute() {
@@ -19,7 +20,9 @@ export default function Contribute() {
             >
                 <Button
                     variant="secondary"
-                    icon={<Github fill="#ffffff10" size={16} />}
+                    icon={
+                        <FontAwesomeIcon icon={faGithub} className="size-4" />
+                    }
                 >
                     View repository
                 </Button>

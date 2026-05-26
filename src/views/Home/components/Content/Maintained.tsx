@@ -3,8 +3,10 @@
 import type { Commit } from "@/types"
 import Button from "@components/UI/Button"
 import { CacheKeys, CacheTTL, Urls } from "@constants"
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { formatTimeAgo, truncateText } from "@utils/formatting"
-import { Check, Github, Merge, TrafficCone } from "lucide-react"
+import { Check, Merge, TrafficCone } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -110,7 +112,15 @@ export default function FeatureMaintained() {
                     target="_blank"
                     className="w-fit"
                 >
-                    <Button variant="secondary" icon={<Github size={16} />}>
+                    <Button
+                        variant="secondary"
+                        icon={
+                            <FontAwesomeIcon
+                                icon={faGithub}
+                                className="size-4"
+                            />
+                        }
+                    >
                         View repository
                     </Button>
                 </Link>
