@@ -12,7 +12,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
-FROM node:lts-alpine
+FROM node:lts-alpine as runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -21,6 +21,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 COPY package.json pnpm-*.yaml ./
+RUN ls -la
 RUN pnpm install --prod --frozen-lockfile
 
 COPY --from=build /app/public ./public
