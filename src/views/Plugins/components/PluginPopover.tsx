@@ -1,9 +1,10 @@
-import { Blocks, Braces, Cog, Monitor } from "lucide-solid"
-import { createSignal, onCleanup, Show } from "solid-js"
+"use client"
 
 import Button from "@components/UI/Button"
 import Dropdown from "@components/UI/Dropdown"
 import Switch from "@components/UI/Switch"
+import { Blocks, Braces, Cog, Monitor } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
 type PluginFilterValue = "all" | "equicord" | "vencord" | "modified"
 type PlatformFilterValue =
@@ -15,54 +16,33 @@ type PlatformFilterValue =
     | "equibop"
 
 interface Props {
-    pluginFilter: () => PluginFilterValue
+    pluginFilter: PluginFilterValue
     setPluginFilter: (value: PluginFilterValue) => void
-    platformFilter: () => PlatformFilterValue
+    platformFilter: PlatformFilterValue
     setPlatformFilter: (value: PlatformFilterValue) => void
-    filterHasCommands: () => boolean
+    filterHasCommands: boolean
     setFilterHasCommands: (value: boolean) => void
-    compactMode: () => boolean
+    compactMode: boolean
     setCompactMode: (value: boolean) => void
 }
 
 const Platforms = [
-    {
-        label: "All",
-        value: "all" as const,
-    },
-    {
-        label: "Desktop",
-        value: "desktop" as const,
-    },
-    {
-        label: "Web",
-        value: "web" as const,
-    },
-    {
-        label: "Discord App",
-        value: "discordDesktop" as const,
-    },
-    {
-        label: "Equibop",
-        value: "equibop" as const,
-    },
-    {
-        label: "Dev Build",
-        value: "dev" as const,
-    },
+    { label: "All", value: "all" as const },
+    { label: "Desktop", value: "desktop" as const },
+    { label: "Web", value: "web" as const },
+    { label: "Discord App", value: "discordDesktop" as const },
+    { label: "Equibop", value: "equibop" as const },
+    { label: "Dev Build", value: "dev" as const },
 ]
 
 const Sources = [
-    {
-        label: "All",
-        value: "all" as const,
-    },
+    { label: "All", value: "all" as const },
     {
         label: "Vencord",
         icon: (
             <img
                 src="/assets/icons/vencord/icon.webp"
-                class="size-6 select-none"
+                className="size-6 select-none"
                 alt="Vencord"
             />
         ),
@@ -73,7 +53,7 @@ const Sources = [
         icon: (
             <img
                 src="/assets/icons/equicord/icon-far.webp"
-                class="size-6 select-none"
+                className="size-6 select-none"
                 alt="Equicord"
             />
         ),
@@ -84,7 +64,7 @@ const Sources = [
         icon: (
             <img
                 src="/assets/icons/equicord/modified.webp"
-                class="size-6 select-none"
+                className="size-6 select-none"
                 alt="Equicord"
             />
         ),
@@ -92,8 +72,18 @@ const Sources = [
     },
 ]
 
-export default function PluginPopover(props: Props) {
-    const [open, setOpen] = createSignal(false)
+export default function PluginPopover({
+    pluginFilter,
+    setPluginFilter,
+    platformFilter,
+    setPlatformFilter,
+    filterHasCommands,
+    setFilterHasCommands,
+    compactMode,
+    setCompactMode,
+}: Props) {
+    const [open, setOpen] = useState(false)
+    const containerRef = useRef<HTMLDivElement>(null)
 
     const toggle = () => setOpen((prev) => !prev)
     const close = () => setOpen(false)
@@ -103,12 +93,16 @@ export default function PluginPopover(props: Props) {
         if (!target.closest(".popover-container")) close()
     }
 
-    document.addEventListener("click", handleClickOutside)
-
-    onCleanup(() => document.removeEventListener("click", handleClickOutside))
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutside)
+        return () => document.removeEventListener("click", handleClickOutside)
+    }, [])
 
     return (
-        <div class="popover-container relative inline-block">
+        <div
+            ref={containerRef}
+            className="popover-container relative inline-block"
+        >
             <Button
                 icon={<Cog size={16} />}
                 variant="secondary"
@@ -117,23 +111,23 @@ export default function PluginPopover(props: Props) {
                 Options
             </Button>
 
-            <Show when={open()}>
-                <div class="absolute right-0 z-50 mt-2 flex w-68 flex-col gap-3 rounded-lg border border-neutral-800 bg-neutral-900 p-4 shadow-lg">
+            {open && (
+                <div className="absolute right-0 z-50 mt-2 flex w-68 flex-col gap-3 rounded-lg border border-neutral-800 bg-neutral-900 p-4 shadow-lg">
                     <Switch
                         icon={<Blocks size={16} />}
                         label="Compact Mode"
-                        checked={props.compactMode()}
+                        checked={compactMode}
                         onChange={(e) =>
-                            props.setCompactMode(e.currentTarget.checked)
+                            setCompactMode(e.currentTarget.checked)
                         }
                     />
 
                     <Switch
                         icon={<Braces size={16} />}
                         label="Has Commands"
-                        checked={props.filterHasCommands()}
+                        checked={filterHasCommands}
                         onChange={(e) =>
-                            props.setFilterHasCommands(e.currentTarget.checked)
+                            setFilterHasCommands(e.currentTarget.checked)
                         }
                     />
 
@@ -146,10 +140,10 @@ export default function PluginPopover(props: Props) {
                         }))}
                         selected={
                             Sources.find(
-                                (item) => item.value === props.pluginFilter(),
+                                (item) => item.value === pluginFilter,
                             ) ?? null
                         }
-                        onSelect={(item) => props.setPluginFilter(item.value)}
+                        onSelect={(item) => setPluginFilter(item.value)}
                         placeholder="Source"
                     />
 
@@ -161,14 +155,14 @@ export default function PluginPopover(props: Props) {
                         }))}
                         selected={
                             Platforms.find(
-                                (item) => item.value === props.platformFilter(),
+                                (item) => item.value === platformFilter,
                             ) ?? null
                         }
-                        onSelect={(item) => props.setPlatformFilter(item.value)}
+                        onSelect={(item) => setPlatformFilter(item.value)}
                         placeholder="Platform"
                     />
                 </div>
-            </Show>
+            )}
         </div>
     )
 }

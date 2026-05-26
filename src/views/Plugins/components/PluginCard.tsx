@@ -1,4 +1,5 @@
-import { A } from "@solidjs/router"
+"use client"
+
 import {
     type Plugin,
     cleanDescription,
@@ -6,8 +7,9 @@ import {
     getAvailabilityText,
 } from "@utils/plugin"
 import classNames from "classnames"
-import { Puzzle, Users } from "lucide-solid"
-import { createSignal, Show } from "solid-js"
+import { Puzzle, Users } from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
 import { getPluginSource, PluginSourceIcon } from "../Details"
 
 interface Props extends Plugin {
@@ -17,12 +19,12 @@ interface Props extends Plugin {
 type CardVariant = "compact" | "normal"
 
 export default function PluginCard(props: Props) {
-    const [hovered, setHovered] = createSignal(false)
+    const [hovered, setHovered] = useState(false)
 
     return (
-        <A
+        <Link
             href={`/plugins/${props.name}`}
-            class={classNames(
+            className={classNames(
                 "relative flex w-full flex-col gap-3 rounded-xl border border-neutral-800",
                 "bg-linear-to-br from-neutral-900 to-neutral-950 p-6 transition-transform",
                 "active:scale-[.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
@@ -33,18 +35,18 @@ export default function PluginCard(props: Props) {
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
         >
-            <div class="flex items-center gap-4">
+            <div className="flex items-center gap-4">
                 <div
-                    class={classNames(
+                    className={classNames(
                         "hidden size-10 relative w-12 h-12 rounded-xl border border-neutral-800",
-                        "bg-gradient-to-t from-neutral-900 to-neutral-800/90 min-w-12",
+                        "bg-linear-to-t from-neutral-900 to-neutral-800/90 min-w-12",
                         "outline-2 outline-offset-2 outline-neutral-600/50 md:flex",
                     )}
                 >
                     <div
-                        class={classNames(
+                        className={classNames(
                             "absolute inset-0 flex items-center justify-center transition-all duration-300 ease-in-out",
-                            hovered()
+                            hovered
                                 ? "opacity-100 scale-100"
                                 : "opacity-0 scale-100",
                         )}
@@ -55,9 +57,9 @@ export default function PluginCard(props: Props) {
                         />
                     </div>
                     <div
-                        class={classNames(
+                        className={classNames(
                             "absolute inset-0 flex items-center justify-center transition-all duration-300 ease-in-out",
-                            hovered()
+                            hovered
                                 ? "opacity-0 scale-100"
                                 : "opacity-100 scale-100",
                         )}
@@ -66,36 +68,32 @@ export default function PluginCard(props: Props) {
                     </div>
                 </div>
 
-                <div class="flex flex-col min-w-0">
-                    <span class="text-xl font-bold text-neutral-100 wrap-break-word">
+                <div className="flex flex-col min-w-0">
+                    <span className="text-xl font-bold text-neutral-100 wrap-break-word">
                         {props.name}
                     </span>
 
-                    <Show when={props.variant === "normal"}>
-                        <p class="flex flex-wrap items-center gap-1 text-sm font-medium text-neutral-400">
+                    {props.variant === "normal" && (
+                        <p className="flex flex-wrap items-center gap-1 text-sm font-medium text-neutral-400">
                             <Users size={16} /> by{" "}
                             {formatAuthors(props.authors)}
                         </p>
-                    </Show>
+                    )}
                 </div>
             </div>
 
-            <p class="text-sm font-medium text-neutral-300">
+            <p className="text-sm font-medium text-neutral-300">
                 {cleanDescription(props.description)}.{" "}
                 {getAvailabilityText(props.name, props.required, props.target)}.
             </p>
 
-            <Show
-                when={
-                    props.variant === "normal" &&
-                    props.hasCommands &&
-                    props.commands.length > 0
-                }
-            >
-                <p class="absolute bottom-6 text-sm font-medium">
-                    Click to view commands.
-                </p>
-            </Show>
-        </A>
+            {props.variant === "normal" &&
+                props.hasCommands &&
+                props.commands.length > 0 && (
+                    <p className="absolute bottom-6 text-sm font-medium">
+                        Click to view commands.
+                    </p>
+                )}
+        </Link>
     )
 }

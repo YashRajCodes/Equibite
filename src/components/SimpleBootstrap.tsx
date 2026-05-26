@@ -1,55 +1,61 @@
-import { Title } from "@solidjs/meta"
-import { createSignal, type JSX, onMount, type ParentProps } from "solid-js"
+"use client"
 
-interface Props extends ParentProps {
+import type { ReactNode } from "react"
+import { useEffect, useState } from "react"
+
+interface Props {
     meta?: {
         title: string
     }
-    icon: JSX.Element
+    icon: ReactNode
     title: string
+    children?: ReactNode
 }
 
-export default function SimpleBootstrap(props: Props) {
-    const [mounted, setMounted] = createSignal(false)
+export default function SimpleBootstrap({
+    meta,
+    icon,
+    title,
+    children,
+}: Props) {
+    const [mounted, setMounted] = useState(false)
 
-    onMount(() => {
+    useEffect(() => {
         requestAnimationFrame(() => setMounted(true))
-    })
+    }, [])
 
     return (
         <>
-            {props.meta?.title && <Title>{props.meta.title}</Title>}
-            <div class="flex w-full flex-col items-center justify-center gap-2 pt-32">
+            {meta?.title && <title>{meta.title}</title>}
+            <div className="flex w-full flex-col items-center justify-center gap-2 pt-32">
                 <div
-                    class="transition-all duration-700 ease-out"
-                    classList={{
-                        "opacity-0 -translate-y-8 scale-90 blur-sm": !mounted(),
-                        "opacity-100 translate-y-0 scale-100 blur-0": mounted(),
-                    }}
+                    className={`transition-all duration-700 ease-out ${
+                        mounted
+                            ? "opacity-100 translate-y-0 scale-100 blur-0"
+                            : "opacity-0 -translate-y-8 scale-90 blur-sm"
+                    }`}
                 >
-                    {props.icon}
+                    {icon}
                 </div>
 
                 <h2
-                    class="text-lg font-medium transition-all duration-700 ease-out"
-                    classList={{
-                        "opacity-0 translate-y-8 blur-sm": !mounted(),
-                        "opacity-100 translate-y-0 blur-0": mounted(),
-                    }}
-                    style={{ "transition-delay": "150ms" }}
+                    className={`text-lg font-medium transition-all duration-700 ease-out delay-150 ${
+                        mounted
+                            ? "opacity-100 translate-y-0 blur-0"
+                            : "opacity-0 translate-y-8 blur-sm"
+                    }`}
                 >
-                    {props.title}
+                    {title}
                 </h2>
 
                 <div
-                    class="flex items-center gap-2 max-sm:flex-col transition-all duration-700 ease-out"
-                    classList={{
-                        "opacity-0 translate-y-5 blur-sm": !mounted(),
-                        "opacity-100 translate-y-0 blur-0": mounted(),
-                    }}
-                    style={{ "transition-delay": "300ms" }}
+                    className={`flex items-center gap-2 max-sm:flex-col transition-all duration-700 ease-out delay-300 ${
+                        mounted
+                            ? "opacity-100 translate-y-0 blur-0"
+                            : "opacity-0 translate-y-5 blur-sm"
+                    }`}
                 >
-                    {props.children}
+                    {children}
                 </div>
             </div>
         </>

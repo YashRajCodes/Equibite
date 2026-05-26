@@ -1,5 +1,5 @@
-import { RotateCcw } from "lucide-solid"
-import { JSX, Show } from "solid-js"
+import { RotateCcw } from "lucide-react"
+import type { ReactNode } from "react"
 import Button from "./Button"
 
 interface LoadingStateProps {
@@ -8,45 +8,46 @@ interface LoadingStateProps {
     loadingText?: string
     errorText?: string
     onRetry?: () => void
-    children: JSX.Element
+    children: ReactNode
 }
 
-export default function LoadingState(props: LoadingStateProps) {
+export default function LoadingState({
+    loading,
+    error,
+    loadingText,
+    errorText,
+    onRetry,
+    children,
+}: LoadingStateProps) {
+    if (!loading && !error) {
+        return <>{children}</>
+    }
+
     return (
-        <Show
-            when={!props.loading && !props.error}
-            fallback={
-                <div class="flex items-center justify-center py-12">
-                    <Show
-                        when={props.error}
-                        fallback={
-                            <div class="flex flex-col items-center gap-2">
-                                <div class="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-sky-500" />
-                                <p class="text-sm font-bold text-sky-200">
-                                    {props.loadingText ?? "Loading"}
-                                </p>
-                            </div>
-                        }
-                    >
-                        <div class="flex flex-col items-center gap-2">
-                            <p class="text-sm font-bold text-red-400">
-                                {props.errorText ?? "Failed to load"}
-                            </p>
-                            <Show when={props.onRetry}>
-                                <Button
-                                    variant="red"
-                                    icon={<RotateCcw size={16} />}
-                                    onClick={props.onRetry}
-                                >
-                                    Retry
-                                </Button>
-                            </Show>
-                        </div>
-                    </Show>
+        <div className="flex items-center justify-center py-12">
+            {error ? (
+                <div className="flex flex-col items-center gap-2">
+                    <p className="text-sm font-bold text-red-400">
+                        {errorText ?? "Failed to load"}
+                    </p>
+                    {onRetry && (
+                        <Button
+                            variant="red"
+                            icon={<RotateCcw size={16} />}
+                            onClick={onRetry}
+                        >
+                            Retry
+                        </Button>
+                    )}
                 </div>
-            }
-        >
-            {props.children}
-        </Show>
+            ) : (
+                <div className="flex flex-col items-center gap-2">
+                    <div className="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-sky-500" />
+                    <p className="text-sm font-bold text-sky-200">
+                        {loadingText ?? "Loading"}
+                    </p>
+                </div>
+            )}
+        </div>
     )
 }

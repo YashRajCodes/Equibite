@@ -1,5 +1,4 @@
-import { A } from "@solidjs/router"
-import { createResource, createSignal, Show } from "solid-js"
+"use client"
 
 import Button from "@components/UI/Button"
 import Switch from "@components/UI/Switch"
@@ -9,29 +8,30 @@ import {
     getAvailabilityText,
     type Plugin,
 } from "@utils/plugin"
-import { Globe, Puzzle } from "lucide-solid"
+import { Globe, Puzzle } from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
 interface PluginProps {
     title: string
     description: string
 }
 
-function DiscordPlugin(props: PluginProps) {
-    const [enabled, setEnabled] = createSignal<boolean>(false)
+function DiscordPlugin({ title, description }: PluginProps) {
+    const [enabled, setEnabled] = useState(false)
 
     return (
-        <div class="w-full max-w-92 rounded-xl bg-neutral-900 px-4 py-6 md:px-6">
-            <div class="flex items-center justify-between">
-                <h1 class="text-lg font-bold">{props.title}</h1>
-
+        <div className="w-full max-w-92 rounded-xl bg-neutral-900 px-4 py-6 md:px-6">
+            <div className="flex items-center justify-between">
+                <h1 className="text-lg font-bold">{title}</h1>
                 <Switch
-                    onclick={() => setEnabled(!enabled())}
-                    checked={enabled()}
+                    onClick={() => setEnabled(!enabled)}
+                    checked={enabled}
                 />
             </div>
 
-            <p class="text-sm font-medium text-neutral-400">
-                {props.description}
+            <p className="text-sm font-medium text-neutral-400">
+                {description}
             </p>
         </div>
     )
@@ -51,73 +51,71 @@ function getRandomPlugins(plugins: Plugin[], count: number): Plugin[] {
 }
 
 export default function FeaturePlugins() {
-    const [plugins] = createResource(() => fetchPlugins("equicord"))
+    const [randomPlugins, setRandomPlugins] = useState<Plugin[] | null>(null)
 
-    const randomPlugins = () => {
-        const list = plugins()
-        if (!list || list.length === 0) return null
-        return getRandomPlugins(list, 2)
-    }
+    useEffect(() => {
+        fetchPlugins("equicord").then((list) => {
+            if (list && list.length > 0) {
+                setRandomPlugins(getRandomPlugins(list, 2))
+            }
+        })
+    }, [])
+
+    const fallbackPlugins = [
+        {
+            title: "ShowBadgesInChat",
+            description:
+                "Shows the message author's badges beside their name in chat. Available on all platforms.",
+        },
+        {
+            title: "BetterActivities",
+            description:
+                "Shows activity icons in the member list and allows showing all activities. Available on all platforms.",
+        },
+    ]
+
+    const displayPlugins = randomPlugins
+        ? randomPlugins.map((p) => ({
+              title: p.name,
+              description: `${cleanDescription(p.description)}. ${getAvailabilityText(p.name, p.required, p.target)}.`,
+          }))
+        : fallbackPlugins
 
     return (
-        <div class="flex justify-between gap-6 max-md:flex-col">
-            <div class="flex w-full flex-col gap-6 rounded-xl bg-neutral-900 px-8 py-12 md:w-2/3 md:justify-between">
-                <div class="flex flex-col gap-2">
-                    <span class="flex items-center gap-2 text-xl font-semibold">
+        <div className="flex justify-between gap-6 max-md:flex-col">
+            <div className="flex w-full flex-col gap-6 rounded-xl bg-neutral-900 px-8 py-12 md:w-2/3 md:justify-between">
+                <div className="flex flex-col gap-2">
+                    <span className="flex items-center gap-2 text-xl font-semibold">
                         <Puzzle fill="#ffffff10" size={24} />
                         Third-party plugins
                     </span>
 
-                    <p class="font-medium text-neutral-400">
+                    <p className="font-medium text-neutral-400">
                         Access a wide variety of plugins, including 150+ plugins
                         alongside the existing ones in Vencord.
                     </p>
                 </div>
 
-                <A href="/plugins" class="w-fit">
+                <Link href="/plugins" className="w-fit">
                     <Button variant="secondary" icon={<Globe size={16} />}>
                         Explore plugins
                     </Button>
-                </A>
+                </Link>
             </div>
 
-            <div class="flex w-full flex-col items-center justify-center py-6 max-md:px-8 max-sm:gap-3">
-                <Show
-                    when={randomPlugins()}
-                    fallback={
-                        <>
-                            <div class="scale-95 brightness-75 md:translate-y-3 lg:translate-x-24">
-                                <DiscordPlugin
-                                    title="ShowBadgesInChat"
-                                    description="Shows the message author's badges beside their name in chat. Available on all platforms."
-                                />
-                            </div>
-                            <div class="-translate-y-6 shadow-lg md:-translate-y-3 lg:-translate-x-24">
-                                <DiscordPlugin
-                                    title="BetterActivities"
-                                    description="Shows activity icons in the member list and allows showing all activities. Available on all platforms."
-                                />
-                            </div>
-                        </>
-                    }
-                >
-                    {(pluginList) => (
-                        <>
-                            <div class="scale-95 brightness-75 md:translate-y-3 lg:translate-x-24">
-                                <DiscordPlugin
-                                    title={pluginList()[0].name}
-                                    description={`${cleanDescription(pluginList()[0].description)}. ${getAvailabilityText(pluginList()[0].name, pluginList()[0].required, pluginList()[0].target)}.`}
-                                />
-                            </div>
-                            <div class="-translate-y-6 shadow-lg md:-translate-y-3 lg:-translate-x-24">
-                                <DiscordPlugin
-                                    title={pluginList()[1].name}
-                                    description={`${cleanDescription(pluginList()[1].description)}. ${getAvailabilityText(pluginList()[1].name, pluginList()[1].required, pluginList()[1].target)}.`}
-                                />
-                            </div>
-                        </>
-                    )}
-                </Show>
+            <div className="flex w-full flex-col items-center justify-center py-6 max-md:px-8 max-sm:gap-3">
+                <div className="scale-95 brightness-75 md:translate-y-3 lg:translate-x-24">
+                    <DiscordPlugin
+                        title={displayPlugins[0].title}
+                        description={displayPlugins[0].description}
+                    />
+                </div>
+                <div className="-translate-y-6 shadow-lg md:-translate-y-3 lg:-translate-x-24">
+                    <DiscordPlugin
+                        title={displayPlugins[1].title}
+                        description={displayPlugins[1].description}
+                    />
+                </div>
             </div>
         </div>
     )

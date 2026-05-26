@@ -3,7 +3,6 @@
     "private": true,
     "version": "1.0.0",
     "description": "The cutest website repository",
-    "type": "module",
     "homepage": "https://github.com/Equicord/Equibite#readme",
     "bugs": {
         "url": "https://github.com/Equicord/Equibite/issues"
@@ -15,39 +14,34 @@
     "license": "GPL-3.0-only",
     "author": "Alex Naibuu <me@naibuu.dev>",
     "scripts": {
-        "dev": "vite",
-        "build": "tsc && vite build",
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
         "format": "prettier --write .",
-        "lint": "prettier --check .",
-        "start": "vite preview --host"
+        "lint": "prettier --check ."
     },
     "devDependencies": {
-        "prettier": "^3.7.3",
+        "@types/node": "^25.9.1",
+        "@types/react": "^19.2.15",
+        "@types/react-dom": "^19.2.3",
+        "prettier": "^3.8.3",
         "prettier-plugin-organize-imports": "^4.3.0",
-        "prettier-plugin-tailwindcss": "^0.6.14",
-        "typescript": "^5.9.3"
+        "prettier-plugin-tailwindcss": "^0.8.0",
+        "typescript": "^6.0.3"
     },
     "dependencies": {
-        "@fortawesome/free-brands-svg-icons": "^7.1.0",
-        "@fortawesome/free-solid-svg-icons": "^7.1.0",
-        "@solidjs/meta": "^0.29.4",
-        "@solidjs/router": "^0.15.4",
-        "@tailwindcss/vite": "^4.1.17",
+        "@fortawesome/fontawesome-svg-core": "^7.2.0",
+        "@fortawesome/free-brands-svg-icons": "^7.2.0",
+        "@fortawesome/free-solid-svg-icons": "^7.2.0",
+        "@fortawesome/react-fontawesome": "^3.3.1",
+        "@tailwindcss/postcss": "^4.3.0",
         "classnames": "^2.5.1",
-        "gsap": "^3.13.0",
-        "lucide-solid": "^0.539.0",
-        "solid-fa": "^0.2.0",
-        "solid-js": "^1.9.10",
-        "solid-toast": "^0.5.0",
-        "tailwindcss": "^4.1.17",
-        "vite": "^7.2.4",
-        "vite-plugin-solid": "^2.11.10",
-        "vite-tsconfig-paths": "^5.1.4"
-    },
-    "workspaces": [
-        "**"
-    ],
-    "patchedDependencies": {
-        "lucide-solid@0.539.0": "patches/lucide-solid.patch"
+        "gsap": "^3.15.0",
+        "lucide-react": "^1.16.0",
+        "next": "^16.2.6",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+        "react-hot-toast": "^2.6.0",
+        "tailwindcss": "^4.3.0"
     }
 }

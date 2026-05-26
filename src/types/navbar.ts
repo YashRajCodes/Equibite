@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js"
+import type { ReactNode } from "react"
 
 export interface NavItem {
     text: string
@@ -7,7 +7,7 @@ export interface NavItem {
 }
 
 export interface BrowseItem {
-    icon: () => JSX.Element
+    icon: () => ReactNode
     text: string
     description: string
     href: string
