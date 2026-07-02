@@ -41,4 +41,4 @@ export interface GitHubContentDir {
     download_url: null
 }
 
-export type GitHubContent = GitHubContentFile | GitHubContentDir
+export type GitHubContent = GitHubContentFile | GitHubContentDir;

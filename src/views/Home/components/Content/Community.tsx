@@ -1,25 +1,24 @@
-import Button from "@components/UI/Button"
-import { A } from "@solidjs/router"
-
-import { faDiscord } from "@fortawesome/free-brands-svg-icons"
-import Fa from "solid-fa"
+import Button from "@components/UI/Button";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 
 export default function Community() {
     return (
-        <div class="relative flex flex-col gap-2 overflow-hidden rounded-xl border border-neutral-900 p-12">
-            <h2 class="text-xl font-bold">Join our community!</h2>
+        <div className="relative flex flex-col gap-2 overflow-hidden rounded-xl border border-neutral-900 p-12">
+            <h2 className="text-xl font-bold">Join our community!</h2>
 
-            <p class="font-medium text-neutral-400">
+            <p className="font-medium text-neutral-400">
                 We have an active community of people on Discord, join and stay
                 up to date with new updates and announcements!
             </p>
 
-            <A href="/discord" target="_blank" class="mt-6 w-fit">
+            <Link href="/discord" target="_blank" className="mt-6 w-fit">
                 <Button variant="secondary">
-                    <Fa icon={faDiscord} class="size-8" />
+                    <FontAwesomeIcon icon={faDiscord} className="size-4" />
                     Join Discord
                 </Button>
-            </A>
+            </Link>
         </div>
-    )
+    );
 }

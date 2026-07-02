@@ -1,22 +1,18 @@
-import { type JSX, splitProps } from "solid-js"
+import type { InputHTMLAttributes, ReactNode } from "react";
 
-interface Props extends JSX.InputHTMLAttributes<HTMLInputElement> {
-    icon?: JSX.Element
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
+    icon?: ReactNode
 }
 
-export default function Input(props: Props) {
-    const [local, rest] = splitProps(props, ["icon", "class"])
-
+export default function Input({ icon, className, ...rest }: Props) {
     return (
-        <div class="flex flex-1 items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 focus-within:bg-neutral-900 focus-within:ring-2 focus-within:ring-sky-500">
-            {local.icon && (
-                <span class="flex-shrink-0 text-neutral-400">{local.icon}</span>
-            )}
+        <div className="flex flex-1 items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2 focus-within:bg-neutral-900 focus-within:ring-2 focus-within:ring-sky-500">
+            {icon && <span className="shrink-0 text-neutral-400">{icon}</span>}
 
             <input
                 {...rest}
-                class={`w-full bg-transparent text-sm font-medium text-white placeholder-neutral-600 outline-none ${local.class ?? ""}`}
+                className={`w-full bg-transparent text-sm font-medium text-white placeholder-neutral-600 outline-none ${className ?? ""}`}
             />
         </div>
-    )
+    );
 }

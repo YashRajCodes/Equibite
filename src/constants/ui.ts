@@ -3,14 +3,14 @@ export const StatusLabels: Record<string, string> = {
     idle: "Away",
     dnd: "Do Not Disturb",
     offline: "Offline",
-}
+};
 
 export const RoleHeaders: Record<string, string> = {
     owner: "text-purple-300",
     team: "text-blue-300",
     helper: "text-green-300",
     artist: "text-pink-300",
-}
+};
 
 export const ActivityTypes: Record<number, string> = {
     0: "Playing ",
@@ -19,7 +19,7 @@ export const ActivityTypes: Record<number, string> = {
     3: "Watching ",
     4: "Custom ",
     5: "Competing in ",
-}
+};
 
 export const LanguageColors: Record<string, string> = {
     Rust: "bg-orange-300",
@@ -28,4 +28,4 @@ export const LanguageColors: Record<string, string> = {
     JavaScript: "bg-amber-300",
     Go: "bg-sky-400",
     default: "bg-neutral-500",
-}
+};

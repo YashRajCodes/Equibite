@@ -1,18 +1,13 @@
-import { useLocation } from "@solidjs/router"
-import classNames from "classnames"
-import { ChevronUp } from "lucide-solid"
-import {
-    Show,
-    createEffect,
-    createSignal,
-    onCleanup,
-    onMount,
-    type JSX,
-} from "solid-js"
+"use client";
+
+import classNames from "classnames";
+import { ChevronUp } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 interface Props {
-    trigger: JSX.Element
-    children: JSX.Element
+    trigger: ReactNode
+    children: ReactNode
     hover?: boolean
     popoverClass?: string
 }
@@ -23,88 +18,92 @@ export default function Popover({
     hover,
     popoverClass,
 }: Props) {
-    const [open, setOpen] = createSignal(false)
-    const [visible, setVisible] = createSignal(false)
-    const location = useLocation()
-    let containerRef: HTMLDivElement | undefined
-    let closeTimeout: number | undefined
-    let prevPathname = location.pathname
+    const [open, setOpen] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const pathname = usePathname();
+    const containerRef = useRef<HTMLDivElement>(null);
+    const closeTimeoutRef = useRef<
+        number | ReturnType<typeof setTimeout> | null
+    >(null);
+    const prevPathnameRef = useRef(pathname);
 
-    createEffect(() => {
-        const currentPath = location.pathname
-        if (currentPath !== prevPathname) {
-            prevPathname = currentPath
-            if (open()) {
-                close()
-            }
+    useEffect(() => {
+        if (pathname !== prevPathnameRef.current) {
+            prevPathnameRef.current = pathname;
+            if (open) close();
         }
-    })
+    }, [pathname]);
 
-    createEffect(() => {
-        if (open()) {
-            requestAnimationFrame(() => setVisible(true))
+    useEffect(() => {
+        if (open) {
+            requestAnimationFrame(() => setVisible(true));
         }
-    })
+    }, [open]);
 
     const openPopover = () => {
-        if (closeTimeout) clearTimeout(closeTimeout)
-        setOpen(true)
-    }
+        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        setOpen(true);
+    };
 
     const close = () => {
-        if (closeTimeout) clearTimeout(closeTimeout)
-        setVisible(false)
-        setTimeout(() => setOpen(false), 200)
-    }
+        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        setVisible(false);
+        setTimeout(() => setOpen(false), 200);
+    };
 
     const delayedClose = () => {
-        if (closeTimeout) clearTimeout(closeTimeout)
-        closeTimeout = window.setTimeout(close, 20)
-    }
+        if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = window.setTimeout(close, 20);
+    };
 
     const toggle = () => {
-        if (open()) {
-            close()
+        if (open) {
+            close();
         } else {
-            openPopover()
+            openPopover();
         }
-    }
+    };
 
     const handleClickOutside = (event: MouseEvent) => {
-        if (containerRef && !containerRef.contains(event.target as Node))
-            close()
-    }
+        if (
+            containerRef.current &&
+            !containerRef.current.contains(event.target as Node)
+        )
+            close();
+    };
 
-    onMount(() => document.addEventListener("click", handleClickOutside))
-    onCleanup(() => document.removeEventListener("click", handleClickOutside))
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
 
     return (
         <div
             ref={containerRef}
-            class="relative inline-block"
+            className="relative inline-block"
             onMouseEnter={hover ? openPopover : undefined}
             onMouseLeave={hover ? delayedClose : undefined}
         >
             <div
                 onClick={!hover ? toggle : undefined}
-                class="flex cursor-pointer items-center hover:bg-neutral-900 py-2 px-3 rounded-xl gap-1 font-medium text-neutral-400 transition-colors hover:text-white"
+                className="flex cursor-pointer items-center hover:bg-neutral-900 py-2 px-3 rounded-xl gap-1 font-medium text-neutral-400 transition-colors hover:text-white"
             >
                 {trigger}
 
                 <ChevronUp
                     size={16}
-                    class={classNames(
-                        open() && "rotate-180",
+                    className={classNames(
+                        open && "rotate-180",
                         "transition-transform",
                     )}
                 />
             </div>
 
-            <Show when={open()}>
+            {open && (
                 <div
-                    class={classNames(
+                    className={classNames(
                         "absolute z-50 mt-2 rounded-2xl border border-neutral-800 bg-neutral-900 shadow-lg p-3 transition-all duration-200 ease-out",
-                        visible()
+                        visible
                             ? "opacity-100 translate-y-0"
                             : "opacity-0 -translate-y-1",
                         popoverClass,
@@ -114,7 +113,7 @@ export default function Popover({
                 >
                     {children}
                 </div>
-            </Show>
+            )}
         </div>
-    )
+    );
 }

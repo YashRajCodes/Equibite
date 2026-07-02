@@ -3,4 +3,4 @@ export type TeamResponse = {
     team: string[]
     helpers: string[]
     artists: string[]
-}
+};

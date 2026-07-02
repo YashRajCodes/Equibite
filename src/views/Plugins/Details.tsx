@@ -1,16 +1,8 @@
-import { Title } from "@solidjs/meta"
-import { A, useNavigate, useParams } from "@solidjs/router"
-import {
-    createMemo,
-    createResource,
-    createSignal,
-    For,
-    Match,
-    Show,
-    Switch,
-} from "solid-js"
+"use client";
 
-import { type Plugin, fetchPlugins, formatAuthors } from "@utils/plugin"
+import Button from "@components/UI/Button";
+import LoadingState from "@components/UI/LoadingState";
+import { fetchPlugins, formatAuthors, type Plugin } from "@utils/plugin";
 import {
     ArrowLeft,
     Braces,
@@ -20,14 +12,15 @@ import {
     Command,
     FileText,
     Globe,
-    Link,
+    Link as LinkIcon,
     Notebook,
     Users,
-} from "lucide-solid"
-
-import Button from "@components/UI/Button"
-import LoadingState from "@components/UI/LoadingState"
-import toast from "solid-toast"
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
 const enum PluginSource {
     Equicord = "Equicord",
@@ -37,276 +30,270 @@ const enum PluginSource {
 }
 
 export const getPluginSource = (props: {
-    filePath: string
-    isModified: boolean
+    filePath: string;
+    isModified: boolean;
 }): PluginSource => {
-    const { filePath, isModified } = props
-    const lower = filePath.toLowerCase()
+    const { filePath, isModified } = props;
+    const lower = filePath.toLowerCase();
 
-    if (isModified) return PluginSource.Modified
-    if (lower.startsWith("src/equicordplugins")) return PluginSource.Equicord
-    if (lower.startsWith("src/plugins")) return PluginSource.Vencord
+    if (isModified) return PluginSource.Modified;
+    if (lower.startsWith("src/equicordplugins")) return PluginSource.Equicord;
+    if (lower.startsWith("src/plugins")) return PluginSource.Vencord;
 
-    return PluginSource.Unknown
-}
+    return PluginSource.Unknown;
+};
 
 interface PluginSourceProps {
-    source: PluginSource
-    size: number
+    source: PluginSource;
+    size: number;
 }
 
 const pluginIcons: Record<PluginSource, string> = {
-    [PluginSource.Equicord]: "/assets/icons/equicord/icon.webp",
+    [PluginSource.Equicord]: "/assets/icons/equicord/icon.png",
     [PluginSource.Vencord]: "/assets/icons/vencord/icon.webp",
     [PluginSource.Modified]: "/assets/icons/equicord/modified.webp",
     [PluginSource.Unknown]: "/assets/icons/misc/userplugin.webp",
-}
+};
 
-export function PluginSourceIcon(props: PluginSourceProps) {
-    const { size, source } = props
-    const icon = pluginIcons[source]
+export function PluginSourceIcon({ size, source }: PluginSourceProps) {
+    const icon = pluginIcons[source];
 
     return (
         <span
-            class={`rounded-full py-0.5 font-semibold flex items-center gap-1`}
+            className={"rounded-full py-0.5 font-semibold flex items-center gap-1"}
         >
-            {icon && <img src={icon} class={`size-${size}`} alt={source} />}
+            {icon && (
+                <Image
+                    src={icon}
+                    width={size * 4}
+                    height={size * 4}
+                    className={`size-${size}`}
+                    alt={source}
+                />
+            )}
         </span>
-    )
+    );
 }
 
-export default function PluginDetails() {
-    const params = useParams()
-    const navigate = useNavigate()
-
-    const [plugins, { refetch }] = createResource<Plugin[]>(() =>
-        fetchPlugins("all"),
-    )
-
-    const plugin = createMemo(() =>
-        plugins()?.find(
-            (plugin) =>
-                plugin.name.toLowerCase() === params.name?.toLowerCase(),
-        ),
-    )
-
-    const [activeTab, setActiveTab] = createSignal<"overview" | "commands">(
+export default function PluginDetails({
+    params,
+}: {
+    params: { name: string; };
+}) {
+    const router = useRouter();
+    const [plugins, setPlugins] = useState<Plugin[] | null>(null);
+    const [error, setError] = useState<Error | null>(null);
+    const [activeTab, setActiveTab] = useState<"overview" | "commands">(
         "overview",
-    )
+    );
+
+    useEffect(() => {
+        fetchPlugins("all").then(setPlugins).catch(setError);
+    }, []);
+
+    const plugin = useMemo(
+        () =>
+            plugins?.find(
+                p => p.name.toLowerCase() === params.name?.toLowerCase(),
+            ),
+        [plugins, params.name],
+    );
 
     const copyLink = (plugin: Plugin) => {
-        const url = `https://equicord.org/plugins/${plugin.name}`
-        navigator.clipboard.writeText(url)
+        const url = `https://equicord.org/plugins/${plugin.name}`;
+        navigator.clipboard.writeText(url);
         toast.success("Copied Link", {
             className:
                 "border-1 !rounded-xl !bg-neutral-900 !text-white !font-medium border-neutral-800",
             iconTheme: {
+                primary: "#fff",
                 secondary: "var(--color-neutral-900)",
             },
-        })
-    }
+        });
+    };
 
     return (
         <>
-            <Title>Plugins | Equicord</Title>
+            <title>{plugin ? `${plugin.name} | Equicord` : "Plugins | Equicord"}</title>
 
-            <div class="max-w-eq-lg mx-auto flex flex-col gap-6 px-6 py-12">
+            <div className="max-w-eq-lg mx-auto flex flex-col gap-6 px-6 py-12">
                 <LoadingState
-                    loading={plugins.state !== "ready"}
-                    error={plugins.error}
+                    loading={plugins === null && error === null}
+                    error={error}
                     loadingText="Loading plugin"
                     errorText="Failed to load plugin"
-                    onRetry={() => refetch()}
+                    onRetry={() => {
+                        setPlugins(null);
+                        setError(null);
+                        fetchPlugins("all").then(setPlugins).catch(setError);
+                    }}
                 >
-                    <Show
-                        when={plugin()}
-                        fallback={
-                            <div class="flex flex-col items-center justify-center gap-1 text-neutral-200">
-                                <FileText size={48} class="text-neutral-500" />
+                    {!plugin ? (
+                        <div className="flex flex-col items-center justify-center gap-1 text-neutral-200">
+                            <FileText size={48} className="text-neutral-500" />
 
-                                <p class="text-lg font-bold">
-                                    Plugin not found.
-                                </p>
+                            <p className="text-lg font-bold">
+                                Plugin not found.
+                            </p>
 
-                                <p class="max-w-92 text-center font-medium text-neutral-300">
-                                    The plugin "{params.name}" could not be
-                                    found.
-                                </p>
+                            <p className="max-w-92 text-center font-medium text-neutral-300">
+                                The plugin &quot;{params.name}&quot; could not
+                                be found.
+                            </p>
 
-                                <Button
-                                    variant="secondary"
-                                    class="mt-2"
-                                    icon={<Globe size={16} />}
-                                    onClick={() => navigate("/plugins")}
-                                >
-                                    Browse plugins
-                                </Button>
-                            </div>
-                        }
-                    >
-                        {(plugin) => (
-                            <div class="flex flex-col gap-6">
-                                <A
-                                    href="/plugins"
-                                    class="flex w-fit items-center gap-1 font-medium transition-all hover:opacity-80 active:scale-[.95]"
-                                >
-                                    <ArrowLeft size={16} />
-                                    Back to plugins
-                                </A>
-                                {/* Header */}
-                                <header class="flex items-center justify-between">
-                                    <div class="flex items-center gap-6">
-                                        <div class="flex size-16 items-center justify-center rounded-xl border border-neutral-800 bg-linear-to-t from-neutral-900 to-neutral-800/90 outline-2 outline-offset-2 outline-neutral-600/50">
-                                            <PluginSourceIcon
-                                                source={getPluginSource(
-                                                    plugin(),
-                                                )}
-                                                size={10}
-                                            />
-                                        </div>
-
-                                        <div class="flex flex-col">
-                                            <div class="flex gap-2 items-center">
-                                                <h1 class="text-2xl font-bold">
-                                                    {plugin().name}
-                                                </h1>
-                                            </div>
-                                            <div class="flex items-center gap-2 font-medium text-neutral-300">
-                                                <Users size={16} />
-
-                                                <span>
-                                                    By{" "}
-                                                    {formatAuthors(
-                                                        plugin().authors,
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
+                            <Button
+                                variant="secondary"
+                                className="mt-2"
+                                icon={<Globe size={16} />}
+                                onClick={() => router.push("/plugins")}
+                            >
+                                Browse plugins
+                            </Button>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-6">
+                            <Link
+                                href="/plugins"
+                                className="flex w-fit items-center gap-1 font-medium transition-all hover:opacity-80 active:scale-[.95]"
+                            >
+                                <ArrowLeft size={16} />
+                                Back to plugins
+                            </Link>
+                            <header className="flex items-center justify-between">
+                                <div className="flex items-center gap-6">
+                                    <div className="flex size-16 items-center justify-center rounded-xl border border-neutral-800 bg-linear-to-t from-neutral-900 to-neutral-800/90 outline-2 outline-offset-2 outline-neutral-600/50">
+                                        <PluginSourceIcon
+                                            source={getPluginSource(plugin)}
+                                            size={12}
+                                        />
                                     </div>
 
-                                    <div class="flex w-fit items-center gap-2">
-                                        <a
-                                            href={`https://github.com/Equicord/Equicord/tree/main/${plugin().filePath}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="flex items-center justify-center gap-1 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all cursor-pointer active:scale-[.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 border-neutral-800/50 bg-neutral-900 text-neutral-300 hover:bg-neutral-800/70 hover:text-neutral-200 focus-visible:ring-neutral-500"
-                                        >
-                                            <span class="shrink-0">
-                                                <Code size={16} />
+                                    <div className="flex flex-col">
+                                        <div className="flex gap-2 items-center">
+                                            <h1 className="text-2xl font-bold">
+                                                {plugin.name}
+                                            </h1>
+                                        </div>
+                                        <div className="flex items-center gap-2 font-medium text-neutral-300">
+                                            <Users size={16} />
+                                            <span>
+                                                By{" "}
+                                                {formatAuthors(plugin.authors)}
                                             </span>
-                                            View Source
-                                        </a>
-                                        <Button
-                                            icon={<Link size={16} />}
-                                            variant="secondary"
-                                            class="!px-4 !py-2.5 text-sm"
-                                            onClick={() => copyLink(plugin())}
-                                        >
-                                            Copy Link
-                                        </Button>
+                                        </div>
                                     </div>
-                                </header>
-
-                                {/* Tabs */}
-                                <div class="flex items-center gap-2">
-                                    <Button
-                                        icon={
-                                            <ChartNoAxesColumnDecreasing
-                                                size={16}
-                                            />
-                                        }
-                                        variant={
-                                            activeTab() === "overview"
-                                                ? "primary"
-                                                : "secondary"
-                                        }
-                                        class="text-sm"
-                                        onClick={() => setActiveTab("overview")}
-                                    >
-                                        Overview
-                                    </Button>
-                                    <Button
-                                        icon={<Braces size={16} />}
-                                        disabled={!plugin().hasCommands}
-                                        variant={
-                                            activeTab() === "commands"
-                                                ? "primary"
-                                                : "secondary"
-                                        }
-                                        class="text-sm"
-                                        onClick={() =>
-                                            plugin().hasCommands &&
-                                            setActiveTab("commands")
-                                        }
-                                    >
-                                        Commands
-                                    </Button>
                                 </div>
 
-                                {/* Content */}
-                                <Switch>
-                                    <Match when={activeTab() === "overview"}>
-                                        <div class="flex flex-col gap-3">
-                                            <h4 class="flex items-center gap-2 text-sm font-medium text-neutral-300">
-                                                <Notebook size={16} />{" "}
-                                                Description
-                                            </h4>
+                                <div className="flex w-fit items-center gap-2">
+                                    <a
+                                        href={`https://github.com/Equicord/Equicord/tree/main/${plugin.filePath}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-center gap-1 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all cursor-pointer active:scale-[.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 border-neutral-800/50 bg-neutral-900 text-neutral-300 hover:bg-neutral-800/70 hover:text-neutral-200 focus-visible:ring-neutral-500"
+                                    >
+                                        <span className="shrink-0">
+                                            <Code size={16} />
+                                        </span>
+                                        View Source
+                                    </a>
+                                    <Button
+                                        icon={<LinkIcon size={16} />}
+                                        variant="secondary"
+                                        className="px-4! py-2.5! text-sm"
+                                        onClick={() => copyLink(plugin)}
+                                    >
+                                        Copy Link
+                                    </Button>
+                                </div>
+                            </header>
 
-                                            <p class="leading-relaxed font-medium">
-                                                {plugin().description ||
-                                                    "No description available."}
-                                            </p>
-                                        </div>
-                                    </Match>
-
-                                    <Match when={activeTab() === "commands"}>
-                                        <div class="flex flex-col gap-6">
-                                            <h4 class="flex items-center gap-2 text-sm font-medium text-neutral-300">
-                                                <Command size={16} />
-                                                Commands
-                                                <span class="rounded-full bg-neutral-800 px-3 text-xs font-medium">
-                                                    {plugin().commands.length}
-                                                </span>
-                                            </h4>
-
-                                            <div class="flex flex-col gap-3">
-                                                <For each={plugin().commands}>
-                                                    {(command) => (
-                                                        <div class="flex flex-col gap-2 border-b border-neutral-900 pb-3">
-                                                            <h4 class="flex items-center gap-2 font-medium">
-                                                                <span class="rounded-lg bg-neutral-800 p-1">
-                                                                    <ChevronRight
-                                                                        size={
-                                                                            14
-                                                                        }
-                                                                    />
-                                                                </span>
-                                                                {command.name}
-                                                            </h4>
-
-                                                            <Show
-                                                                when={
-                                                                    command.description
-                                                                }
-                                                            >
-                                                                <p class="text-sm text-neutral-400">
-                                                                    {
-                                                                        command.description
-                                                                    }
-                                                                </p>
-                                                            </Show>
-                                                        </div>
-                                                    )}
-                                                </For>
-                                            </div>
-                                        </div>
-                                    </Match>
-                                </Switch>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    icon={
+                                        <ChartNoAxesColumnDecreasing
+                                            size={16}
+                                        />
+                                    }
+                                    variant={
+                                        activeTab === "overview"
+                                            ? "primary"
+                                            : "secondary"
+                                    }
+                                    className="text-sm"
+                                    onClick={() => setActiveTab("overview")}
+                                >
+                                    Overview
+                                </Button>
+                                <Button
+                                    icon={<Braces size={16} />}
+                                    disabled={!plugin.hasCommands}
+                                    variant={
+                                        activeTab === "commands"
+                                            ? "primary"
+                                            : "secondary"
+                                    }
+                                    className="text-sm"
+                                    onClick={() =>
+                                        plugin.hasCommands &&
+                                        setActiveTab("commands")
+                                    }
+                                >
+                                    Commands
+                                </Button>
                             </div>
-                        )}
-                    </Show>
+
+                            {activeTab === "overview" && (
+                                <div className="flex flex-col gap-3">
+                                    <h4 className="flex items-center gap-2 text-sm font-medium text-neutral-300">
+                                        <Notebook size={16} /> Description
+                                    </h4>
+
+                                    <p className="leading-relaxed font-medium">
+                                        {plugin.description ||
+                                            "No description available."}
+                                    </p>
+                                </div>
+                            )}
+
+                            {activeTab === "commands" && (
+                                <div className="flex flex-col gap-6">
+                                    <h4 className="flex items-center gap-2 text-sm font-medium text-neutral-300">
+                                        <Command size={16} />
+                                        Commands
+                                        <span className="rounded-full bg-neutral-800 px-3 text-xs font-medium">
+                                            {plugin.commands.length}
+                                        </span>
+                                    </h4>
+
+                                    <div className="flex flex-col gap-3">
+                                        {plugin.commands.map(command => (
+                                            <div
+                                                key={command.name}
+                                                className="flex flex-col gap-2 border-b border-neutral-900 pb-3"
+                                            >
+                                                <h4 className="flex items-center gap-2 font-medium">
+                                                    <span className="rounded-lg bg-neutral-800 p-1">
+                                                        <ChevronRight
+                                                            size={14}
+                                                        />
+                                                    </span>
+                                                    {command.name}
+                                                </h4>
+
+                                                {command.description && (
+                                                    <p className="text-sm text-neutral-400">
+                                                        {command.description}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </LoadingState>
             </div>
         </>
-    )
+    );
 }

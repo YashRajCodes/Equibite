@@ -1,7 +1,13 @@
-import PageBootstrap from "@components/PageBootstrap"
-import Button from "@components/UI/Button"
-import { A } from "@solidjs/router"
-import { CloudFog, Link, Rabbit, RefreshCcw, Scroll } from "lucide-solid"
+import PageBootstrap from "@components/PageBootstrap";
+import Button from "@components/UI/Button";
+import {
+    CloudFog,
+    Link as LinkIcon,
+    Rabbit,
+    RefreshCcw,
+    Scroll,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function Cloud() {
     return (
@@ -12,78 +18,78 @@ export default function Cloud() {
             title="Cloud"
             description="Equicord comes with a cloud integration allowing settings to be synced across apps and devices. We use our own Equicloud source code to provide our cloud instance which has a 60MB backup cap."
         >
-            <div class="mt-6 flex flex-col gap-6">
-                <h1 class="text-2xl font-bold">What is included?</h1>
+            <div className="mt-6 flex flex-col gap-6">
+                <h1 className="text-2xl font-bold">What is included?</h1>
 
-                <div class="flex flex-col gap-1">
-                    <h2 class="inline-flex items-center gap-2 text-xl font-bold">
+                <div className="flex flex-col gap-1">
+                    <h2 className="inline-flex items-center gap-2 text-xl font-bold">
                         <RefreshCcw size={16} />
                         Settings Sync
                     </h2>
 
-                    <p class="font-medium text-neutral-400">
+                    <p className="font-medium text-neutral-400">
                         Synchronises your settings across all your devices
                     </p>
                 </div>
 
-                <div class="flex flex-col gap-1">
-                    <h2 class="inline-flex items-center gap-2 text-xl font-bold">
+                <div className="flex flex-col gap-1">
+                    <h2 className="inline-flex items-center gap-2 text-xl font-bold">
                         <Rabbit size={16} />
                         Coming soon
                     </h2>
 
-                    <p class="font-medium text-neutral-400">
+                    <p className="font-medium text-neutral-400">
                         Stay tuned for more future features!
                     </p>
                 </div>
             </div>
 
-            <div class="mt-6 flex flex-col gap-3">
-                <h1 class="text-2xl font-bold">Getting Started</h1>
+            <div className="mt-6 flex flex-col gap-3">
+                <h1 className="text-2xl font-bold">Getting Started</h1>
 
-                <p class="font-medium text-neutral-400">
+                <p className="font-medium text-neutral-400">
                     To start using our cloud integration, head over to the
                     Equicord settings section inside Discord and check the
-                    "Enable Cloud Integrations" switch. After authorising,
-                    you're good to go! You can now enable specific features on
-                    the same page.
+                    &quot;Enable Cloud Integrations&quot; switch. After
+                    authorising, you&apos;re good to go! You can now enable
+                    specific features on the same page.
                 </p>
 
-                <p class="font-medium text-neutral-400">
+                <p className="font-medium text-neutral-400">
                     To use our cloud, all you need to do is change the backend
                     url in the cloud tab to{" "}
-                    <code class="bg-neutral-800 text-neutral-100 px-2 py-1 rounded border border-neutral-700 font-mono">
+                    <code className="bg-neutral-800 text-neutral-100 px-2 py-1 rounded border border-neutral-700 font-mono">
                         https://cloud.equicord.org
                     </code>
                 </p>
             </div>
 
-            <div class="mt-6 flex items-center gap-3">
-                <A
+            <div className="mt-6 flex items-center gap-3">
+                <Link
                     href="https://github.com/Equicord/Equicloud"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-fit"
+                    className="w-fit"
                 >
                     <Button
                         variant="primary"
-                        icon={<Link size={16} />}
-                        class="text-sm"
+                        icon={<LinkIcon size={16} />}
+                        className="text-sm"
                     >
                         View the source code
                     </Button>
-                </A>
+                </Link>
 
-                <A href="/cloud/policy" class="w-fit">
+                <Link href="/cloud/policy" className="w-fit">
                     <Button
                         variant="primary"
                         icon={<Scroll size={16} />}
-                        class="text-sm"
+                        className="text-sm"
                     >
                         Read our privacy policy
                     </Button>
-                </A>
+                </Link>
             </div>
         </PageBootstrap>
-    )
+    );
 }

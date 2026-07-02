@@ -1,243 +1,241 @@
+"use client";
+
+import PageBootstrap from "@components/PageBootstrap";
+import LoadingState from "@components/UI/LoadingState";
+import { ActivityTypes, RoleHeaders, StatusLabels, Urls } from "@constants";
+import { Shield } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+
 import type {
     Activity,
     LanyardIncomingMessage,
     LanyardUser,
     TeamResponse,
-} from "@/types"
-import { fetchTeam } from "@/utils"
-import PageBootstrap from "@components/PageBootstrap"
-import LoadingState from "@components/UI/LoadingState"
-import { ActivityTypes, RoleHeaders, StatusLabels, Urls } from "@constants"
-import { Shield } from "lucide-solid"
-import { createSignal, For, onCleanup, onMount, Show } from "solid-js"
+} from "@/types";
+import { fetchTeam } from "@/utils";
 
 async function fetchUsers(ids: string[]): Promise<Record<string, LanyardUser>> {
     const results = await Promise.all(
-        ids.map(async (id) => {
+        ids.map(async id => {
             try {
-                const res = await fetch(`${Urls.LANYARD_API}/users/${id}`)
-                if (!res.ok) return null
+                const res = await fetch(`${Urls.LANYARD_API}/users/${id}`);
+                if (!res.ok) return null;
 
-                const json = await res.json()
-                return json.success ? [id, json.data as LanyardUser] : null
+                const json = await res.json();
+                return json.success ? [id, json.data as LanyardUser] : null;
             } catch {
-                return null
+                return null;
             }
         }),
-    )
+    );
 
-    const filtered = results.filter(Boolean) as [string, LanyardUser][]
-    return Object.fromEntries(filtered)
+    const filtered = results.filter(Boolean) as [string, LanyardUser][];
+    return Object.fromEntries(filtered);
 }
 
 function createLanyardSocket(
     ids: string[],
     onUpdate: (userId: string, user: LanyardUser) => void,
 ): WebSocket {
-    const ws = new WebSocket(Urls.LANYARD_WS)
-    let heartbeatInterval: ReturnType<typeof setInterval> | null = null
+    const ws = new WebSocket(Urls.LANYARD_WS);
+    let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
-    ws.onmessage = (event) => {
-        const message: LanyardIncomingMessage = JSON.parse(event.data)
+    ws.onmessage = event => {
+        const message: LanyardIncomingMessage = JSON.parse(event.data);
 
         switch (message.op) {
             case 1:
                 heartbeatInterval = setInterval(() => {
-                    ws.send(JSON.stringify({ op: 3 }))
-                }, message.d.heartbeat_interval)
+                    ws.send(JSON.stringify({ op: 3 }));
+                }, message.d.heartbeat_interval);
 
                 ws.send(
                     JSON.stringify({
                         op: 2,
                         d: { subscribe_to_ids: ids },
                     }),
-                )
-                break
+                );
+                break;
 
             case 0:
                 if (message.t === "PRESENCE_UPDATE") {
-                    const user = message.d
+                    const user = message.d;
                     if (user.discord_user?.id) {
-                        onUpdate(user.discord_user.id, user)
+                        onUpdate(user.discord_user.id, user);
                     }
                 }
-                break
+                break;
         }
-    }
+    };
 
     ws.onclose = () => {
-        if (heartbeatInterval) clearInterval(heartbeatInterval)
-    }
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+    };
 
-    return ws
+    return ws;
 }
 
 function getActivityLabel(activity: Activity) {
-    return ActivityTypes[activity.type] ?? ""
+    return ActivityTypes[activity.type] ?? "";
 }
 
-function UserCard(props: { userData: LanyardUser }) {
-    const u = () => props.userData.discord_user
+function UserCard({ userData }: { userData: LanyardUser }) {
+    const u = userData.discord_user;
 
-    const avatar = () => {
-        const user = u()
-        return user.avatar
-            ? user.avatar.startsWith("a_")
-                ? `${Urls.DISCORD_CDN}/avatars/${user.id}/${user.avatar}.gif?size=128`
-                : `${Urls.DISCORD_CDN}/avatars/${user.id}/${user.avatar}.webp?size=128`
-            : `${Urls.DISCORD_CDN}/embed/avatars/0.png`
-    }
+    const avatar = u.avatar
+        ? u.avatar.startsWith("a_")
+            ? `${Urls.DISCORD_CDN}/avatars/${u.id}/${u.avatar}.gif?size=128`
+            : `${Urls.DISCORD_CDN}/avatars/${u.id}/${u.avatar}.webp?size=128`
+        : `${Urls.DISCORD_CDN}/embed/avatars/0.png`;
 
-    const decoration = () => {
-        const user = u()
-        return user.avatar_decoration_data
-            ? `${Urls.DISCORD_CDN}/avatar-decoration-presets/${user.avatar_decoration_data.asset}.png?size=128`
-            : null
-    }
+    const decoration = u.avatar_decoration_data
+        ? `${Urls.DISCORD_CDN}/avatar-decoration-presets/${u.avatar_decoration_data.asset}.png?size=128`
+        : null;
 
-    const customStatus = () =>
-        props.userData.activities.find((a) => a.type === 4)
-    const otherActivity = () =>
-        props.userData.activities.find((a) => a.type !== 4)
+    const customStatus = userData.activities.find(a => a.type === 4);
+    const otherActivity = userData.activities.find(a => a.type !== 4);
 
-    const username = () => u().global_name ?? u().username
-    const status = () =>
-        customStatus()?.state ??
-        StatusLabels[props.userData.discord_status] ??
-        "Unknown"
+    const username = u.global_name ?? u.username;
+    const status =
+        customStatus?.state ??
+        StatusLabels[userData.discord_status] ??
+        "Unknown";
+
+    const statusColorClass =
+        {
+            online: "bg-green-500",
+            idle: "bg-yellow-500",
+            dnd: "bg-red-500",
+            offline: "bg-gray-500",
+        }[userData.discord_status] ?? "bg-gray-500";
 
     return (
-        <div class="group relative overflow-hidden rounded-xl border border-neutral-800 bg-gradient-to-br from-neutral-900 to-neutral-950 p-6">
-            <div class="relative z-10 flex flex-col items-center text-center">
-                <div class="relative mb-4">
-                    <div class="relative">
-                        <Show when={decoration()}>
-                            <img
-                                src={decoration()!}
+        <div className="group relative overflow-hidden rounded-xl border border-neutral-800 bg-linear-to-br from-neutral-900 to-neutral-950 p-6">
+            <div className="relative z-10 flex flex-col items-center text-center">
+                <div className="relative mb-4">
+                    <div className="relative">
+                        {decoration && (
+                            <Image
+                                src={decoration}
+                                width={64}
+                                height={64}
                                 draggable={false}
-                                class="absolute inset-0 z-10 size-16 object-fit select-none scale-115"
+                                className="absolute inset-0 z-10 size-16 object-fit select-none scale-115"
+                                alt="decoration"
+                                unoptimized
                             />
-                        </Show>
+                        )}
 
-                        <img
-                            src={avatar()}
-                            alt={`${username()}'s avatar`}
+                        <Image
+                            src={avatar}
+                            alt={`${username}'s avatar`}
+                            width={64}
+                            height={64}
                             draggable={false}
-                            loading="lazy"
-                            class="size-16 rounded-full border-2 border-neutral-700 select-none"
+                            className="size-16 rounded-full border-2 border-neutral-700 select-none"
+                            unoptimized
                         />
 
                         <div
-                            class="absolute -right-1 -bottom-1 z-20 h-5 w-5 rounded-full border-2 border-neutral-900"
+                            className={`absolute -right-1 -bottom-1 z-20 h-5 w-5 rounded-full border-2 border-neutral-900 ${statusColorClass}`}
                             role="status"
-                            aria-label={`Status: ${StatusLabels[props.userData.discord_status] || "Offline"}`}
-                            classList={{
-                                "bg-green-500":
-                                    props.userData.discord_status === "online",
-                                "bg-yellow-500":
-                                    props.userData.discord_status === "idle",
-                                "bg-red-500":
-                                    props.userData.discord_status === "dnd",
-                                "bg-gray-500":
-                                    props.userData.discord_status ===
-                                        "offline" ||
-                                    !props.userData.discord_status,
-                            }}
-                        ></div>
+                            aria-label={`Status: ${StatusLabels[userData.discord_status] || "Offline"}`}
+                        />
                     </div>
                 </div>
 
-                <h3 class="text-lg font-semibold text-white">{username()}</h3>
+                <h3 className="text-lg font-semibold text-white">{username}</h3>
 
-                <div class="mt-3 flex flex-col gap-1 text-center">
-                    <Show when={customStatus()?.state}>
-                        <p class="text-sm font-medium text-neutral-300">
-                            {customStatus()!.state}
+                <div className="mt-3 flex flex-col gap-1 text-center">
+                    {customStatus?.state && (
+                        <p className="text-sm font-medium text-neutral-300">
+                            {customStatus.state}
                         </p>
-                    </Show>
+                    )}
 
-                    <Show when={otherActivity()}>
-                        <p class="text-xs text-neutral-400">
-                            {getActivityLabel(otherActivity()!)}
-                            {otherActivity()!.details ?? otherActivity()!.name}
+                    {otherActivity && (
+                        <p className="text-xs text-neutral-400">
+                            {getActivityLabel(otherActivity)}
+                            {otherActivity.details ?? otherActivity.name}
                         </p>
-                    </Show>
+                    )}
 
-                    <Show when={!customStatus()?.state && !otherActivity()}>
-                        <p class="text-sm text-neutral-400">{status()}</p>
-                    </Show>
+                    {!customStatus?.state && !otherActivity && (
+                        <p className="text-sm text-neutral-400">{status}</p>
+                    )}
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-function RoleSection(props: {
+function RoleSection({
+    title,
+    userIds,
+    users,
+    colorClass,
+}: {
     title: string
     userIds: string[]
     users: Record<string, LanyardUser>
     colorClass: string
 }) {
-    const filteredUsers = () =>
-        props.userIds
-            .map((id) => props.users[id])
-            .filter((u): u is LanyardUser => !!u)
+    const filteredUsers = userIds
+        .map(id => users[id])
+        .filter((u): u is LanyardUser => !!u);
+
+    if (filteredUsers.length === 0) return null;
 
     return (
-        <Show when={filteredUsers().length > 0}>
-            <section class="flex flex-col gap-4">
-                <h2 class={`text-xl font-bold ${props.colorClass}`}>
-                    {props.title}
-                </h2>
-                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    <For each={props.userIds}>
-                        {(id) => (
-                            <Show when={props.users[id]}>
-                                <UserCard userData={props.users[id]} />
-                            </Show>
-                        )}
-                    </For>
-                </div>
-            </section>
-        </Show>
-    )
+        <section className="flex flex-col gap-4">
+            <h2 className={`text-xl font-bold ${colorClass}`}>{title}</h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {userIds.map(
+                    id =>
+                        users[id] && <UserCard key={id} userData={users[id]} />,
+                )}
+            </div>
+        </section>
+    );
 }
 
 export default function Teams() {
-    const [users, setUsers] = createSignal<Record<string, LanyardUser>>({})
-    const [loading, setLoading] = createSignal(true)
-    const [team, setTeam] = createSignal<TeamResponse | null>(null)
+    const [users, setUsers] = useState<Record<string, LanyardUser>>({});
+    const [loading, setLoading] = useState(true);
+    const [team, setTeam] = useState<TeamResponse | null>(null);
+    const wsRef = useRef<WebSocket | null>(null);
 
-    let ws: WebSocket | null = null
+    useEffect(() => {
+        (async () => {
+            try {
+                const teamData = await fetchTeam();
+                setTeam(teamData);
 
-    onMount(async () => {
-        try {
-            const teamData = await fetchTeam()
-            setTeam(teamData)
+                const allIds = [
+                    ...teamData.owners,
+                    ...teamData.team,
+                    ...teamData.helpers,
+                    ...teamData.artists,
+                ];
 
-            const allIds = [
-                ...teamData.owners,
-                ...teamData.team,
-                ...teamData.helpers,
-                ...teamData.artists,
-            ]
+                const data = await fetchUsers(allIds);
+                setUsers(data);
+                setLoading(false);
 
-            const data = await fetchUsers(allIds)
-            setUsers(data)
-            setLoading(false)
+                wsRef.current = createLanyardSocket(allIds, (userId, user) => {
+                    setUsers(prev => ({ ...prev, [userId]: user }));
+                });
+            } catch (err) {
+                console.error("Failed to load team:", err);
+                setLoading(false);
+            }
+        })();
 
-            ws = createLanyardSocket(allIds, (userId, user) => {
-                setUsers((prev) => ({ ...prev, [userId]: user }))
-            })
-        } catch (err) {
-            console.error("Failed to load team:", err)
-            setLoading(false)
-        }
-    })
-
-    onCleanup(() => {
-        ws?.close()
-    })
+        return () => {
+            wsRef.current?.close();
+        };
+    }, []);
 
     return (
         <PageBootstrap
@@ -247,41 +245,36 @@ export default function Teams() {
             title="Meet the Team"
             description="The amazing people behind Equicord"
         >
-            <LoadingState
-                loading={loading()}
-                loadingText="Loading team members"
-            >
-                <Show when={team()}>
-                    {(t) => (
-                        <div class="flex flex-col gap-8">
-                            <RoleSection
-                                title="Owner"
-                                userIds={t().owners}
-                                users={users()}
-                                colorClass={RoleHeaders.owner}
-                            />
-                            <RoleSection
-                                title="Team"
-                                userIds={t().team}
-                                users={users()}
-                                colorClass={RoleHeaders.team}
-                            />
-                            <RoleSection
-                                title="Helpers"
-                                userIds={t().helpers}
-                                users={users()}
-                                colorClass={RoleHeaders.helper}
-                            />
-                            <RoleSection
-                                title="Artists"
-                                userIds={t().artists}
-                                users={users()}
-                                colorClass={RoleHeaders.artist}
-                            />
-                        </div>
-                    )}
-                </Show>
+            <LoadingState loading={loading} loadingText="Loading team members">
+                {team && (
+                    <div className="flex flex-col gap-8">
+                        <RoleSection
+                            title="Owner"
+                            userIds={team.owners}
+                            users={users}
+                            colorClass={RoleHeaders.owner}
+                        />
+                        <RoleSection
+                            title="Team"
+                            userIds={team.team}
+                            users={users}
+                            colorClass={RoleHeaders.team}
+                        />
+                        <RoleSection
+                            title="Helpers"
+                            userIds={team.helpers}
+                            users={users}
+                            colorClass={RoleHeaders.helper}
+                        />
+                        <RoleSection
+                            title="Artists"
+                            userIds={team.artists}
+                            users={users}
+                            colorClass={RoleHeaders.artist}
+                        />
+                    </div>
+                )}
             </LoadingState>
         </PageBootstrap>
-    )
+    );
 }

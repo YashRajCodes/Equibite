@@ -15,7 +15,7 @@ export type PluginTarget =
     | "desktop"
     | "web"
     | "dev"
-    | undefined
+    | undefined;
 
 export interface Plugin {
     name: string

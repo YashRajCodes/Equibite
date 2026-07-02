@@ -1,187 +1,161 @@
-import PageBootstrap from "@components/PageBootstrap"
-import Input from "@components/UI/Input"
-import LoadingState from "@components/UI/LoadingState"
+"use client";
+
+import PageBootstrap from "@components/PageBootstrap";
+import Input from "@components/UI/Input";
+import LoadingState from "@components/UI/LoadingState";
 import {
     INITIAL_VISIBLE_COUNT,
     LOAD_MORE_COUNT,
     LOAD_MORE_THRESHOLD,
-} from "@constants"
-import { useSearchParams } from "@solidjs/router"
-import { fetchPlugins } from "@utils/plugin"
-import { getStored, setStored } from "@utils/storage"
-import { Puzzle, Search, SearchX } from "lucide-solid"
-import {
-    createEffect,
-    createMemo,
-    createResource,
-    createSignal,
-    For,
-    onCleanup,
-    onMount,
-    Show,
-} from "solid-js"
-import PluginCard from "./components/PluginCard"
-import PluginPopover from "./components/PluginPopover"
+} from "@constants";
+import { fetchPlugins, Plugin } from "@utils/plugin";
+import { getStored, setStored } from "@utils/storage";
+import { Puzzle, Search, SearchX } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-type PluginFilter = "all" | "equicord" | "vencord" | "modified"
+import PluginCard from "./components/PluginCard";
+import PluginPopover from "./components/PluginPopover";
+
+type PluginFilter = "all" | "equicord" | "vencord" | "modified";
 type PlatformFilter =
     | "all"
     | "dev"
     | "web"
     | "desktop"
     | "discordDesktop"
-    | "equibop"
+    | "equibop";
 
 export default function Plugins() {
-    const [plugins, { refetch }] = createResource(() => fetchPlugins("all"))
-    const [searchParams, setSearchParams] = useSearchParams()
-    const [search, setSearch] = createSignal(searchParams.search || "")
-
-    const [compactMode, setCompactMode] = createSignal(
+    const searchParams = useSearchParams();
+    const [plugins, setPlugins] = useState<Plugin[] | null>(null);
+    const [error, setError] = useState<Error | null>(null);
+    const [search, setSearch] = useState(searchParams.get("search") ?? "");
+    const [compactMode, setCompactMode] = useState(() =>
         getStored<boolean>("compactMode", true),
-    )
-    const [pluginFilter, setPluginFilter] = createSignal<PluginFilter>(
-        (searchParams.source as PluginFilter) || "all",
-    )
-    const [platformFilter, setPlatformFilter] = createSignal<PlatformFilter>(
-        (searchParams.platform as PlatformFilter) || "all",
-    )
-    const [filterHasCommands, setFilterHasCommands] = createSignal(
-        searchParams.commands === "true",
-    )
+    );
+    const [pluginFilter, setPluginFilter] = useState<PluginFilter>(
+        (searchParams.get("source") as PluginFilter) ?? "all",
+    );
+    const [platformFilter, setPlatformFilter] = useState<PlatformFilter>(
+        (searchParams.get("platform") as PlatformFilter) ?? "all",
+    );
+    const [filterHasCommands, setFilterHasCommands] = useState(
+        searchParams.get("commands") === "true",
+    );
+    const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+    const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const [visibleCount, setVisibleCount] = createSignal(INITIAL_VISIBLE_COUNT)
+    useEffect(() => {
+        fetchPlugins("all").then(setPlugins).catch(setError);
+    }, []);
 
-    createEffect(() => {
-        setStored("compactMode", compactMode())
-        setSearchParams({
-            search: search() || undefined,
-            source: pluginFilter() !== "all" ? pluginFilter() : undefined,
-            platform: platformFilter() !== "all" ? platformFilter() : undefined,
-            commands: filterHasCommands() ? "true" : undefined,
-        })
-    })
+    useEffect(() => {
+        setStored("compactMode", compactMode);
+    }, [compactMode]);
 
     const updateSearch = (value: string) => {
-        setSearch(value)
-        setVisibleCount(INITIAL_VISIBLE_COUNT)
-    }
+        setSearch(value);
+        setVisibleCount(INITIAL_VISIBLE_COUNT);
+    };
 
-    const filteredPlugins = createMemo(() => {
-        const pluginList = plugins()
-        if (!pluginList) return []
+    const filteredPlugins = useMemo(() => {
+        if (!plugins) return [];
 
-        let result = [...pluginList]
+        let result = [...plugins];
 
-        const searchQuery = search()
         const query = (
-            Array.isArray(searchQuery)
-                ? (searchQuery[0] ?? "")
-                : (searchQuery ?? "")
+            Array.isArray(search) ? (search[0] ?? "") : (search ?? "")
         )
             .toLowerCase()
-            .trim()
+            .trim();
 
         if (query) {
-            result = result.filter((plugin) => {
-                const nameMatch = plugin.name.toLowerCase().includes(query)
-                const authorMatch = plugin.authors.some((author) =>
+            result = result.filter(plugin => {
+                const nameMatch = plugin.name.toLowerCase().includes(query);
+                const authorMatch = plugin.authors.some(author =>
                     author.name.toLowerCase().includes(query),
-                )
-
-                return nameMatch || authorMatch
-            })
+                );
+                return nameMatch || authorMatch;
+            });
         }
 
-        switch (pluginFilter()) {
-            case "equicord": {
-                result = result.filter((plugin) =>
+        switch (pluginFilter) {
+            case "equicord":
+                result = result.filter(plugin =>
                     plugin.filePath
                         .toLowerCase()
                         .startsWith("src/equicordplugins"),
-                )
-                break
-            }
-            case "vencord": {
-                result = result.filter((plugin) =>
+                );
+                break;
+            case "vencord":
+                result = result.filter(plugin =>
                     plugin.filePath.toLowerCase().startsWith("src/plugins"),
-                )
-                break
-            }
-            case "modified": {
-                result = result.filter((plugin) => plugin.isModified)
-                break
-            }
+                );
+                break;
+            case "modified":
+                result = result.filter(plugin => plugin.isModified);
+                break;
         }
 
-        switch (platformFilter()) {
-            case "desktop": {
-                result = result.filter((plugin) => plugin.target === "desktop")
-                break
-            }
-            case "dev": {
-                result = result.filter((plugin) => plugin.target === "dev")
-                break
-            }
-            case "discordDesktop": {
+        switch (platformFilter) {
+            case "desktop":
+                result = result.filter(plugin => plugin.target === "desktop");
+                break;
+            case "dev":
+                result = result.filter(plugin => plugin.target === "dev");
+                break;
+            case "discordDesktop":
                 result = result.filter(
-                    (plugin) => plugin.target === "discordDesktop",
-                )
-                break
-            }
-            case "equibop": {
-                result = result.filter((plugin) => plugin.target === "equibop")
-                break
-            }
-            case "web": {
-                result = result.filter((plugin) => plugin.target === "web")
-                break
-            }
+                    plugin => plugin.target === "discordDesktop",
+                );
+                break;
+            case "equibop":
+                result = result.filter(plugin => plugin.target === "equibop");
+                break;
+            case "web":
+                result = result.filter(plugin => plugin.target === "web");
+                break;
         }
 
-        if (filterHasCommands()) {
-            result = result.filter((plugin) => plugin.hasCommands)
+        if (filterHasCommands) {
+            result = result.filter(plugin => plugin.hasCommands);
         }
 
-        return result.sort((a, b) => a.name.localeCompare(b.name))
-    })
+        return result.sort((a, b) => a.name.localeCompare(b.name));
+    }, [plugins, search, pluginFilter, platformFilter, filterHasCommands]);
 
-    const visiblePlugins = createMemo(() =>
-        filteredPlugins().slice(0, visibleCount()),
-    )
+    const visiblePlugins = useMemo(
+        () => filteredPlugins.slice(0, visibleCount),
+        [filteredPlugins, visibleCount],
+    );
+    const hasMorePlugins = visibleCount < filteredPlugins.length;
 
-    const hasMorePlugins = createMemo(
-        () => visibleCount() < filteredPlugins().length,
-    )
+    const handleScroll = useCallback(() => {
+        if (scrollTimeoutRef.current) return;
 
-    let scrollTimeout: ReturnType<typeof setTimeout> | null = null
+        scrollTimeoutRef.current = setTimeout(() => {
+            scrollTimeoutRef.current = null;
 
-    const handleScroll = () => {
-        if (scrollTimeout) return
-
-        scrollTimeout = setTimeout(() => {
-            scrollTimeout = null
-
-            const { innerHeight, scrollY } = window
-            const { offsetHeight } = document.body
+            const { innerHeight, scrollY } = window;
+            const { offsetHeight } = document.body;
 
             if (
                 innerHeight + scrollY >= offsetHeight - LOAD_MORE_THRESHOLD &&
-                hasMorePlugins()
+                hasMorePlugins
             ) {
-                setVisibleCount((count) => count + LOAD_MORE_COUNT)
+                setVisibleCount(count => count + LOAD_MORE_COUNT);
             }
-        }, 100)
-    }
+        }, 100);
+    }, [hasMorePlugins]);
 
-    onMount(() => {
-        window.addEventListener("scroll", handleScroll, { passive: true })
-    })
-
-    onCleanup(() => {
-        window.removeEventListener("scroll", handleScroll)
-        if (scrollTimeout) clearTimeout(scrollTimeout)
-    })
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        };
+    }, [handleScroll]);
 
     return (
         <PageBootstrap
@@ -189,15 +163,17 @@ export default function Plugins() {
             fullWidth
             icon={<Puzzle />}
             title="Plugins"
-            description={`${filteredPlugins().length} plugin${filteredPlugins().length !== 1 ? "s" : ""} found`}
+            description={`${filteredPlugins.length} plugin${filteredPlugins.length !== 1 ? "s" : ""} found`}
         >
-            <div class="flex items-center gap-3">
+            <div className="flex items-center gap-3">
                 <Input
                     placeholder="Search plugins..."
-                    value={search()}
-                    onInput={(e) => updateSearch(e.currentTarget.value)}
+                    value={search}
+                    onInput={e =>
+                        updateSearch((e.target as HTMLInputElement).value)
+                    }
                     icon={<Search size={18} />}
-                    class="flex-1 py-1.5"
+                    className="flex-1 py-1.5"
                 />
                 <PluginPopover
                     pluginFilter={pluginFilter}
@@ -211,56 +187,56 @@ export default function Plugins() {
                 />
             </div>
 
-            <main class="w-full">
+            <main className="w-full">
                 <LoadingState
-                    loading={plugins.loading}
-                    error={plugins.error}
+                    loading={plugins === null && error === null}
+                    error={error}
                     loadingText="Loading plugins"
                     errorText="Failed to load plugins"
-                    onRetry={() => refetch()}
+                    onRetry={() => {
+                        setPlugins(null);
+                        setError(null);
+                        fetchPlugins("all").then(setPlugins).catch(setError);
+                    }}
                 >
-                    <Show
-                        when={filteredPlugins().length > 0}
-                        fallback={
-                            <div class="flex flex-col items-center justify-center gap-1 py-12 text-neutral-200">
-                                <SearchX size={48} class="text-neutral-500" />
-
-                                <p class="text-lg font-bold">
-                                    No plugins found.
-                                </p>
-
-                                <p class="max-w-92 text-center font-medium text-neutral-300">
-                                    Try adjusting your search or filters to find
-                                    what you are looking for.
-                                </p>
-                            </div>
-                        }
-                    >
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            <For each={visiblePlugins()}>
-                                {(plugin) => (
+                    {filteredPlugins.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center gap-1 py-12 text-neutral-200">
+                            <SearchX size={48} className="text-neutral-500" />
+                            <p className="text-lg font-bold">
+                                No plugins found.
+                            </p>
+                            <p className="max-w-92 text-center font-medium text-neutral-300">
+                                Try adjusting your search or filters to find
+                                what you are looking for.
+                            </p>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                {visiblePlugins.map(plugin => (
                                     <PluginCard
+                                        key={plugin.name}
                                         variant={
-                                            compactMode() ? "compact" : "normal"
+                                            compactMode ? "compact" : "normal"
                                         }
                                         {...plugin}
                                     />
-                                )}
-                            </For>
-                        </div>
-
-                        <Show when={hasMorePlugins()}>
-                            <div class="mt-8 flex flex-col items-center gap-2">
-                                <div class="h-6 w-6 animate-spin rounded-full border-2 border-neutral-700 border-t-sky-500" />
-                                <p class="text-sm text-neutral-400">
-                                    Showing {visiblePlugins().length} of{" "}
-                                    {filteredPlugins().length} plugins
-                                </p>
+                                ))}
                             </div>
-                        </Show>
-                    </Show>
+
+                            {hasMorePlugins && (
+                                <div className="mt-8 flex flex-col items-center gap-2">
+                                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-neutral-700 border-t-sky-500" />
+                                    <p className="text-sm text-neutral-400">
+                                        Showing {visiblePlugins.length} of{" "}
+                                        {filteredPlugins.length} plugins
+                                    </p>
+                                </div>
+                            )}
+                        </>
+                    )}
                 </LoadingState>
             </main>
         </PageBootstrap>
-    )
+    );
 }
