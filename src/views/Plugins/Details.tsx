@@ -14,6 +14,7 @@ import {
     Globe,
     Link as LinkIcon,
     Notebook,
+    Tags,
     Users,
 } from "lucide-react";
 import Image from "next/image";
@@ -244,7 +245,26 @@ export default function PluginDetails({
 
                             {activeTab === "overview" && (
                                 <div className="flex flex-col gap-3">
-                                    <h4 className="flex items-center gap-2 text-sm font-medium text-neutral-300">
+                                    {plugin.tags && plugin.tags.length > 0 && (
+                                        <>
+                                            <h4 className="flex items-center gap-2 text-sm font-medium text-neutral-300">
+                                                <Tags size={16} /> Tags
+                                            </h4>
+
+                                            <div className="flex flex-wrap gap-2">
+                                                {plugin.tags.map(tag => (
+                                                    <span
+                                                        key={tag}
+                                                        className="rounded-full bg-neutral-800 px-3 py-1 text-xs font-medium text-neutral-300"
+                                                    >
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </>
+                                    )}
+
+                                    <h4 className="mt-2 flex items-center gap-2 text-sm font-medium text-neutral-300">
                                         <Notebook size={16} /> Description
                                     </h4>
 

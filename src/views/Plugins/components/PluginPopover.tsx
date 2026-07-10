@@ -3,7 +3,7 @@
 import Button from "@components/UI/Button";
 import Dropdown from "@components/UI/Dropdown";
 import Switch from "@components/UI/Switch";
-import { Blocks, Braces, Cog, Monitor } from "lucide-react";
+import { Blocks, Braces, Cog, Monitor, Tags } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -25,6 +25,9 @@ interface Props {
     setFilterHasCommands: (value: boolean) => void;
     compactMode: boolean;
     setCompactMode: (value: boolean) => void;
+    tagFilter: string;
+    setTagFilter: (value: string) => void;
+    availableTags: string[];
 }
 
 const Platforms = [
@@ -88,6 +91,9 @@ export default function PluginPopover({
     setFilterHasCommands,
     compactMode,
     setCompactMode,
+    tagFilter,
+    setTagFilter,
+    availableTags,
 }: Props) {
     const [open, setOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -168,6 +174,26 @@ export default function PluginPopover({
                         onSelect={item => setPlatformFilter(item.value)}
                         placeholder="Platform"
                     />
+
+                    {availableTags.length > 0 && (
+                        <Dropdown<string>
+                            icon={<Tags size={16} />}
+                            items={[
+                                { label: "All Tags", value: "all" },
+                                ...availableTags.map(tag => ({
+                                    label: tag,
+                                    value: tag,
+                                })),
+                            ]}
+                            selected={
+                                tagFilter === "all"
+                                    ? { label: "All Tags", value: "all" }
+                                    : { label: tagFilter, value: tagFilter }
+                            }
+                            onSelect={item => setTagFilter(item.value)}
+                            placeholder="Tag"
+                        />
+                    )}
                 </div>
             )}
         </div>

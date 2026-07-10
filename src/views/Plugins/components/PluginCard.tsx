@@ -83,6 +83,19 @@ export default function PluginCard(props: Props) {
                 </div>
             </div>
 
+            {props?.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-1">
+                    {props.tags.map(tag => (
+                        <span
+                            key={tag}
+                            className="rounded-full bg-neutral-800/80 px-2.5 py-0.5 text-xs font-medium text-neutral-300"
+                        >
+                            {tag}
+                        </span>
+                    ))}
+                </div>
+            )}
+
             <p className="text-sm font-medium text-neutral-300">
                 {cleanDescription(props.description)}.{" "}
                 {getAvailabilityText(props.name, props.required, props.target)}.

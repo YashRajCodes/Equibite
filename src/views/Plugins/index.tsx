@@ -40,6 +40,9 @@ export default function Plugins() {
     const [platformFilter, setPlatformFilter] = useState<PlatformFilter>(
         (searchParams.get("platform") as PlatformFilter) ?? "all",
     );
+    const [tagFilter, setTagFilter] = useState<string>(
+        searchParams.get("tag") ?? "all",
+    );
     const [filterHasCommands, setFilterHasCommands] = useState(
         searchParams.get("commands") === "true",
     );
@@ -59,6 +62,19 @@ export default function Plugins() {
         setVisibleCount(INITIAL_VISIBLE_COUNT);
     };
 
+    const availableTags = useMemo(() => {
+        if (!plugins) return [];
+        const tags = new Set<string>();
+        for (const plugin of plugins) {
+            if (plugin.tags) {
+                for (const tag of plugin.tags) {
+                    tags.add(tag);
+                }
+            }
+        }
+        return Array.from(tags).sort();
+    }, [plugins]);
+
     const filteredPlugins = useMemo(() => {
         if (!plugins) return [];
 
@@ -76,7 +92,10 @@ export default function Plugins() {
                 const authorMatch = plugin.authors.some(author =>
                     author.name.toLowerCase().includes(query),
                 );
-                return nameMatch || authorMatch;
+                const tagMatch = plugin.tags?.some(tag =>
+                    tag.toLowerCase().includes(query),
+                );
+                return nameMatch || authorMatch || tagMatch;
             });
         }
 
@@ -122,8 +141,12 @@ export default function Plugins() {
             result = result.filter(plugin => plugin.hasCommands);
         }
 
+        if (tagFilter !== "all") {
+            result = result.filter(plugin => plugin.tags?.includes(tagFilter));
+        }
+
         return result.sort((a, b) => a.name.localeCompare(b.name));
-    }, [plugins, search, pluginFilter, platformFilter, filterHasCommands]);
+    }, [plugins, search, pluginFilter, platformFilter, filterHasCommands, tagFilter]);
 
     const visiblePlugins = useMemo(
         () => filteredPlugins.slice(0, visibleCount),
@@ -180,6 +203,9 @@ export default function Plugins() {
                     setPluginFilter={setPluginFilter}
                     platformFilter={platformFilter}
                     setPlatformFilter={setPlatformFilter}
+                    tagFilter={tagFilter}
+                    setTagFilter={setTagFilter}
+                    availableTags={availableTags}
                     filterHasCommands={filterHasCommands}
                     setFilterHasCommands={setFilterHasCommands}
                     compactMode={compactMode}
