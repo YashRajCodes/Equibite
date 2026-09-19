@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import { fetchPlugins } from "@utils/plugin";
 import PluginDetails from "@views/Plugins/Details";
 import type { Metadata } from "next";
@@ -80,5 +81,10 @@ export async function generateViewport({ params }: { params: Promise<{ name: str
 
 export default async function PluginDetailPage({ params }: { params: Promise<{ name: string; }>; }) {
     const resolvedParams = await params;
-    return <PluginDetails params={resolvedParams} />;
+    return (
+        <>
+            <DiscordEmbed page="plugin" query={{ name: resolvedParams.name }} />
+            <PluginDetails params={resolvedParams} />
+        </>
+    );
 }

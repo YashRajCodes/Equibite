@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import ProjectsView from "@views/Projects";
 
 export const metadata = {
@@ -5,5 +6,10 @@ export const metadata = {
 };
 
 export default function ProjectsPage() {
-    return <ProjectsView />;
+    return (
+        <>
+            <DiscordEmbed page="projects" />
+            <ProjectsView />
+        </>
+    );
 }

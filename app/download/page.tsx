@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import DownloadView from "@views/Download";
 
 export const metadata = {
@@ -5,5 +6,10 @@ export const metadata = {
 };
 
 export default function DownloadPage() {
-    return <DownloadView />;
+    return (
+        <>
+            <DiscordEmbed page="download" />
+            <DownloadView />
+        </>
+    );
 }

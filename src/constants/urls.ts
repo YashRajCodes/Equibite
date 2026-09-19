@@ -1,4 +1,6 @@
 export const Urls = {
+    SITE_URL: "https://equicord.org",
+
     ALL_PLUGINS_URL:
         "https://raw.githubusercontent.com/Equicord/Equibored/main/plugins.json",
     EQUICORD_PLUGINS_URL:

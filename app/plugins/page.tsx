@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import PluginsView from "@views/Plugins";
 import { Suspense } from "react";
 
@@ -7,8 +8,11 @@ export const metadata = {
 
 export default function PluginsPage() {
     return (
-        <Suspense>
-            <PluginsView />
-        </Suspense>
+        <>
+            <DiscordEmbed page="plugins" />
+            <Suspense>
+                <PluginsView />
+            </Suspense>
+        </>
     );
 }

@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import IconsView from "@views/Icons";
 
 export const metadata = {
@@ -5,5 +6,10 @@ export const metadata = {
 };
 
 export default function IconsPage() {
-    return <IconsView />;
+    return (
+        <>
+            <DiscordEmbed page="icons" />
+            <IconsView />
+        </>
+    );
 }

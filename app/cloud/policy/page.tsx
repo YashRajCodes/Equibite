@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import CloudPolicyView from "@views/Cloud/Policy";
 
 export const metadata = {
@@ -5,5 +6,10 @@ export const metadata = {
 };
 
 export default function CloudPolicyPage() {
-    return <CloudPolicyView />;
+    return (
+        <>
+            <DiscordEmbed page="cloud-policy" />
+            <CloudPolicyView />
+        </>
+    );
 }

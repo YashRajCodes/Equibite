@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import CloudView from "@views/Cloud";
 
 export const metadata = {
@@ -5,5 +6,10 @@ export const metadata = {
 };
 
 export default function CloudPage() {
-    return <CloudView />;
+    return (
+        <>
+            <DiscordEmbed page="cloud" />
+            <CloudView />
+        </>
+    );
 }

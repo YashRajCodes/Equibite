@@ -1,3 +1,4 @@
+import DiscordEmbed from "@components/Layout/DiscordEmbed";
 import CloudGDPRView from "@views/Cloud/GDPR";
 
 export const metadata = {
@@ -5,5 +6,10 @@ export const metadata = {
 };
 
 export default function CloudGDPRPage() {
-    return <CloudGDPRView />;
+    return (
+        <>
+            <DiscordEmbed page="cloud-gdpr" />
+            <CloudGDPRView />
+        </>
+    );
 }
