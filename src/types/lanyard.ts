@@ -4,12 +4,19 @@ export interface AvatarDecoration {
     expires_at: string | null
 }
 
+export interface ActivityEmoji {
+    id?: string
+    name: string
+    animated?: boolean
+}
+
 export interface Activity {
     id: string
     name: string
     type: number
     state?: string
     details?: string
+    emoji?: ActivityEmoji
 }
 
 export type DiscordStatus = "online" | "idle" | "dnd" | "offline";

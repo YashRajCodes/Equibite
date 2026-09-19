@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type {
     Activity,
+    ActivityEmoji,
     LanyardIncomingMessage,
     LanyardUser,
     TeamResponse,
@@ -80,6 +81,24 @@ function getActivityLabel(activity: Activity) {
     return ActivityTypes[activity.type] ?? "";
 }
 
+function StatusEmoji({ emoji }: { emoji: ActivityEmoji }) {
+    if (!emoji.id) {
+        return <span aria-hidden="true">{emoji.name}</span>;
+    }
+
+    return (
+        <Image
+            src={`${Urls.DISCORD_CDN}/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}?size=32`}
+            alt={emoji.name}
+            width={16}
+            height={16}
+            draggable={false}
+            className="inline-block size-4 select-none"
+            unoptimized
+        />
+    );
+}
+
 function UserCard({ userData }: { userData: LanyardUser }) {
     const u = userData.discord_user;
 
@@ -148,8 +167,11 @@ function UserCard({ userData }: { userData: LanyardUser }) {
                 <h3 className="text-lg font-semibold text-white">{username}</h3>
 
                 <div className="mt-3 flex flex-col gap-1 text-center">
-                    {customStatus?.state && (
-                        <p className="text-sm font-medium text-neutral-300">
+                    {(customStatus?.state || customStatus?.emoji) && (
+                        <p className="flex items-center justify-center gap-1.5 text-sm font-medium text-neutral-300">
+                            {customStatus.emoji && (
+                                <StatusEmoji emoji={customStatus.emoji} />
+                            )}
                             {customStatus.state}
                         </p>
                     )}
@@ -161,7 +183,7 @@ function UserCard({ userData }: { userData: LanyardUser }) {
                         </p>
                     )}
 
-                    {!customStatus?.state && !otherActivity && (
+                    {!customStatus?.state && !customStatus?.emoji && !otherActivity && (
                         <p className="text-sm text-neutral-400">{status}</p>
                     )}
                 </div>
