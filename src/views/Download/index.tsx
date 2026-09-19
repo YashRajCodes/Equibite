@@ -13,7 +13,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    getMacArch,
     isAndroid,
     isChromeOS,
     isIOS,
@@ -82,17 +81,37 @@ const EquicordPlatforms: Platform[] = [
         downloads: [
             {
                 text: "GUI",
-                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-darwin-arm64.zip",
-                prioritize: getMacArch() === "arm64",
-                note: "Apple Silicon (ARM64) Installer may work on Intel but is not recommended",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-universal.dmg",
+                prioritize: true,
+                note: "Intel & Apple Silicon",
             },
             {
                 text: "GUI",
-                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-darwin-x64.zip",
-                prioritize: getMacArch() === "x64",
-                note: "Intel (X64) Installer may work on Apple Silicon but is not recommended",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64.dmg",
+                note: "Apple Silicon (ARM64)",
+            },
+            {
+                text: "GUI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x64.dmg",
+                note: "Intel (X64)",
+            },
+            {
+                text: "CLI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-universal",
+                note: "Intel & Apple Silicon",
+            },
+            {
+                text: "CLI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-arm64",
+                note: "Apple Silicon (ARM64)",
+            },
+            {
+                text: "CLI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-x64",
+                note: "Intel (X64)",
             },
         ],
+        warning: "The CLIs must be made executable first: chmod +x <file>",
         isCurrent: isMac(),
     },
 ];

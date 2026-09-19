@@ -12,8 +12,7 @@ export function downloadEmbed() {
         actionRow([
             linkButton("Windows", `${EQUILOTL}/Equilotl.exe`, "1550885992087420971"),
             linkButton("Linux", `${EQUILOTL}/Equilotl`, "1550886019597869096"),
-            linkButton("macOS (Apple Silicon)", `${EQUILOTL}/Equilotl-darwin-arm64.zip`, "1550885956934959234"),
-            linkButton("macOS (Intel)", `${EQUILOTL}/Equilotl-darwin-x64.zip`, "1550885956934959234"),
+            linkButton("macOS", `${EQUILOTL}/Equilotl-universal.dmg`, "1550885956934959234"),
         ]),
         separator(1),
         text("**Browser extension**"),
