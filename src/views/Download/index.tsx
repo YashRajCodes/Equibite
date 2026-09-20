@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+    detectArch,
     isAndroid,
     isChromeOS,
     isIOS,
@@ -24,7 +25,7 @@ import classNames from "classnames";
 import { AlertCircle, DownloadIcon, MonitorCheck, Package } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import type { Platform, Section } from "@/types";
+import type { Arch, DisplayServer, Platform, Section } from "@/types";
 import { fetchEquibopVersion } from "@/utils";
 
 const EquicordPlatforms: Platform[] = [
@@ -35,11 +36,24 @@ const EquicordPlatforms: Platform[] = [
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl.exe",
+                arch: "x64",
+                prioritize: true,
+            },
+            {
+                text: "GUI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64.exe",
+                arch: "arm64",
                 prioritize: true,
             },
             {
                 text: "CLI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli.exe",
+                arch: "x64",
+            },
+            {
+                text: "CLI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-arm64.exe",
+                arch: "arm64",
             },
         ],
         isCurrent: isWindows(),
@@ -51,22 +65,54 @@ const EquicordPlatforms: Platform[] = [
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl",
+                arch: "x64",
+                display: "combined",
                 prioritize: true,
-                note: "Both X11 and Wayland",
             },
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x11",
-                note: "X11 only",
+                arch: "x64",
+                display: "x11",
+                prioritize: true,
             },
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-wayland",
-                note: "Wayland only",
+                arch: "x64",
+                display: "wayland",
+                prioritize: true,
             },
             {
                 text: "CLI",
-                href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-Linux",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-linux",
+                arch: "x64",
+            },
+            {
+                text: "GUI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64",
+                arch: "arm64",
+                display: "combined",
+                prioritize: true,
+            },
+            {
+                text: "GUI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x11-arm64",
+                arch: "arm64",
+                display: "x11",
+                prioritize: true,
+            },
+            {
+                text: "GUI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-wayland-arm64",
+                arch: "arm64",
+                display: "wayland",
+                prioritize: true,
+            },
+            {
+                text: "CLI",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-linux-arm64",
+                arch: "arm64",
             },
             {
                 text: "AUR",
@@ -81,34 +127,36 @@ const EquicordPlatforms: Platform[] = [
         downloads: [
             {
                 text: "GUI",
-                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-universal.dmg",
+                href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl.dmg",
+                arch: "universal",
                 prioritize: true,
-                note: "Intel & Apple Silicon",
             },
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64.dmg",
-                note: "Apple Silicon (ARM64)",
+                arch: "arm64",
+                prioritize: true,
             },
             {
                 text: "GUI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x64.dmg",
-                note: "Intel (X64)",
+                arch: "x64",
+                prioritize: true,
             },
             {
                 text: "CLI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-universal",
-                note: "Intel & Apple Silicon",
+                arch: "universal",
             },
             {
                 text: "CLI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-arm64",
-                note: "Apple Silicon (ARM64)",
+                arch: "arm64",
             },
             {
                 text: "CLI",
                 href: "https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-x64",
-                note: "Intel (X64)",
+                arch: "x64",
             },
         ],
         warning: "The CLIs must be made executable first: chmod +x <file>",
@@ -176,11 +224,14 @@ const getEquibopPlatforms = (version: string): Platform[] => [
             {
                 text: "x64",
                 href: `https://github.com/Equicord/Equibop/releases/download/v${version}/Equibop-Setup-${version}.exe`,
+                arch: "x64",
                 prioritize: true,
             },
             {
                 text: "ARM64",
                 href: `https://github.com/Equicord/Equibop/releases/download/v${version}/Equibop-${version}-arm64-win.zip`,
+                arch: "arm64",
+                prioritize: true,
             },
         ],
         isCurrent: isWindows(),
@@ -192,11 +243,14 @@ const getEquibopPlatforms = (version: string): Platform[] => [
             {
                 text: "x64",
                 href: `https://github.com/Equicord/Equibop/releases/download/v${version}/Equibop-${version}.AppImage`,
+                arch: "x64",
                 prioritize: true,
             },
             {
                 text: "ARM64",
                 href: `https://github.com/Equicord/Equibop/releases/download/v${version}/Equibop-${version}-arm64.AppImage`,
+                arch: "arm64",
+                prioritize: true,
             },
             {
                 text: "AUR",
@@ -217,7 +271,6 @@ const getEquibopPlatforms = (version: string): Platform[] => [
                 text: "Universal",
                 href: `https://github.com/Equicord/Equibop/releases/download/v${version}/Equibop-${version}-universal.dmg`,
                 prioritize: true,
-                note: "Intel & Apple Silicon",
             },
         ],
         isCurrent: isMac(),
@@ -331,12 +384,65 @@ const getSections = (version: string): Section[] => [
     },
 ];
 
+const DISPLAYS: { value: DisplayServer, label: string; }[] = [
+    { value: "combined", label: "Combined" },
+    { value: "x11", label: "X11" },
+    { value: "wayland", label: "Wayland" },
+];
+
+function SegmentedControl<T extends string>({
+    options,
+    value,
+    onChange,
+}: {
+    options: { value: T, label: string; }[];
+    value: T;
+    onChange: (value: T) => void;
+}) {
+    return (
+        <div className="w-full grid grid-flow-col auto-cols-fr gap-1 p-1 rounded-xl border border-neutral-800 bg-neutral-950/60">
+            {options.map(option => (
+                <button
+                    key={option.value}
+                    type="button"
+                    aria-pressed={value === option.value}
+                    onClick={() => onChange(option.value)}
+                    className={classNames(
+                        "py-1.5 rounded-lg text-sm font-semibold transition-colors cursor-pointer",
+                        value === option.value
+                            ? "bg-neutral-800 text-neutral-100"
+                            : "text-neutral-500 hover:text-neutral-300",
+                    )}
+                >
+                    {option.label}
+                </button>
+            ))}
+        </div>
+    );
+}
+
+const ARCHES: { value: Arch, label: string; }[] = [
+    { value: "universal", label: "Universal" },
+    { value: "x64", label: "x64" },
+    { value: "arm64", label: "ARM64" },
+];
+
 export default function Download() {
     const [version, setVersion] = useState<string | null>(null);
+    const [detectedArch, setDetectedArch] = useState<Arch>("x64");
+    const [archOverrides, setArchOverrides] = useState<Record<string, Arch>>(
+        {},
+    );
+    const [displayOverrides, setDisplayOverrides] = useState<
+        Record<string, DisplayServer>
+    >({});
 
     useEffect(() => {
         fetchEquibopVersion().then(setVersion);
+        detectArch().then(setDetectedArch);
     }, []);
+
+    const sections = version ? getSections(version) : [];
 
     return (
         <PageBootstrap
@@ -347,51 +453,68 @@ export default function Download() {
             description="Here are your download options."
         >
             <div className="flex flex-col gap-12">
-                {version &&
-                    getSections(version).map(section => (
-                        <div
-                            key={section.title}
-                            className="flex flex-col gap-4"
-                        >
-                            <div className="flex flex-col gap-2">
-                                <div className="flex items-center gap-3">
-                                    <h2 className="text-2xl font-bold">
-                                        {section.title}
-                                    </h2>
-                                    {section.githubUrl && (
-                                        <a
-                                            href={section.githubUrl}
-                                            target="_blank"
-                                            className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
-                                        >
-                                            GitHub →
-                                        </a>
-                                    )}
-                                </div>
-                                <p className="text-neutral-400 text-sm">
-                                    {section.description}
-                                </p>
-                                {section.globalWarning && (
-                                    <div className="flex items-start gap-2 px-4 py-3 rounded-lg bg-yellow-950/30 border border-yellow-900/50 text-yellow-200 text-sm">
-                                        <AlertCircle
-                                            size={16}
-                                            className="mt-0.5 shrink-0"
-                                        />
-                                        <span>{section.globalWarning}</span>
-                                    </div>
+                {sections.map(section => (
+                    <div
+                        key={section.title}
+                        className="flex flex-col gap-4"
+                    >
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-2xl font-bold">
+                                    {section.title}
+                                </h2>
+                                {section.githubUrl && (
+                                    <a
+                                        href={section.githubUrl}
+                                        target="_blank"
+                                        className="text-sm text-neutral-400 hover:text-neutral-200 transition-colors"
+                                    >
+                                        GitHub →
+                                    </a>
                                 )}
                             </div>
+                            <p className="text-neutral-400 text-sm">
+                                {section.description}
+                            </p>
+                            {section.globalWarning && (
+                                <div className="flex items-start gap-2 px-4 py-3 rounded-lg bg-yellow-950/30 border border-yellow-900/50 text-yellow-200 text-sm">
+                                    <AlertCircle
+                                        size={16}
+                                        className="mt-0.5 shrink-0"
+                                    />
+                                    <span>{section.globalWarning}</span>
+                                </div>
+                            )}
+                        </div>
 
-                            <div className="flex items-stretch flex-wrap gap-6">
-                                {section.platforms.map(platform => (
+                        <div className="flex items-stretch flex-wrap gap-6">
+                            {section.platforms.map(platform => {
+                                const cardKey = `${section.title}-${platform.title}`;
+                                const archOptions = ARCHES.filter(({ value }) =>
+                                    platform.downloads.some(
+                                        download => download.arch === value,
+                                    ),
+                                );
+                                const defaultArch = archOptions.some(
+                                    ({ value }) => value === "universal",
+                                )
+                                    ? "universal"
+                                    : detectedArch;
+                                const arch = archOverrides[cardKey] ?? defaultArch;
+                                const displayOptions = DISPLAYS.filter(
+                                    ({ value }) =>
+                                        platform.downloads.some(
+                                            download =>
+                                                download.display === value,
+                                        ),
+                                );
+                                const display
+                                    = displayOverrides[cardKey] ?? "combined";
+
+                                return (
                                     <div
                                         key={platform.title}
-                                        className={classNames(
-                                            "flex-1 xs:min-w-80 flex flex-col justify-between gap-4 py-6 px-6 rounded-xl border border-neutral-800",
-                                            platform.isCurrent
-                                                ? "bg-linear-to-tl from-neutral-900 to-green-950"
-                                                : "bg-linear-to-br from-neutral-900 to-neutral-950",
-                                        )}
+                                        className="flex-1 xs:min-w-80 flex flex-col justify-between gap-4 py-6 px-6 rounded-xl border border-neutral-800 bg-linear-to-br from-neutral-900 to-neutral-950"
                                     >
                                         <div className="flex flex-col gap-3">
                                             <div className="flex justify-between items-center">
@@ -427,61 +550,103 @@ export default function Download() {
                                         </div>
 
                                         <div className="inline-flex items-start flex-wrap gap-3">
-                                            {platform.downloads.map(
-                                                download => (
-                                                    <div
-                                                        key={
-                                                            download.text +
-                                                            download.href
-                                                        }
-                                                        className="flex-1 flex flex-col gap-1.5"
-                                                    >
-                                                        {download.href ? (
-                                                            <a
-                                                                href={
-                                                                    download.href
-                                                                }
-                                                                target="_blank"
-                                                                className="w-full"
-                                                            >
-                                                                <Button
-                                                                    variant={
-                                                                        platform.isCurrent &&
-                                                                            download.prioritize
-                                                                            ? "primary"
-                                                                            : "secondary"
-                                                                    }
-                                                                    className="w-full"
-                                                                    icon={
-                                                                        <DownloadIcon
-                                                                            size={
-                                                                                14
-                                                                            }
-                                                                        />
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        download.text
-                                                                    }
-                                                                </Button>
-                                                            </a>
-                                                        ) : (
-                                                            <Button
-                                                                variant="secondary"
-                                                                className="w-full cursor-not-allowed opacity-60"
-                                                                disabled
-                                                            >
-                                                                {download.text}
-                                                            </Button>
-                                                        )}
+                                            {(archOptions.length > 1 || displayOptions.length > 1) && (
+                                                <div className="w-full flex flex-col gap-2 mb-3">
+                                                    {archOptions.length > 1 && (
+                                                        <SegmentedControl
+                                                            options={archOptions}
+                                                            value={arch}
+                                                            onChange={value =>
+                                                                setArchOverrides(prev => ({
+                                                                    ...prev,
+                                                                    [cardKey]: value,
+                                                                }))}
+                                                        />
+                                                    )}
 
-                                                        <span className="text-xs text-neutral-500 text-center px-1 min-h-4">
-                                                            {download.note ??
-                                                                ""}
-                                                        </span>
-                                                    </div>
-                                                ),
+                                                    {displayOptions.length > 1 && (
+                                                        <SegmentedControl
+                                                            options={displayOptions}
+                                                            value={display}
+                                                            onChange={value =>
+                                                                setDisplayOverrides(prev => ({
+                                                                    ...prev,
+                                                                    [cardKey]: value,
+                                                                }))}
+                                                        />
+                                                    )}
+                                                </div>
                                             )}
+
+                                            {platform.downloads
+                                                .filter(
+                                                    download =>
+                                                        (!download.arch
+                                                            || download.arch === arch)
+                                                        && (!download.display
+                                                            || download.display === display),
+                                                )
+                                                .map(download => {
+                                                    const isRecommended =
+                                                        platform.isCurrent &&
+                                                        download.prioritize &&
+                                                        (!download.arch ||
+                                                            download.arch === "universal" ||
+                                                            download.arch === detectedArch);
+
+                                                    return (
+                                                        <div
+                                                            key={
+                                                                download.text +
+                                                                download.href
+                                                            }
+                                                            className="flex-1 flex flex-col gap-1.5"
+                                                        >
+                                                            {download.href ? (
+                                                                <a
+                                                                    href={
+                                                                        download.href
+                                                                    }
+                                                                    target="_blank"
+                                                                    className="w-full"
+                                                                >
+                                                                    <Button
+                                                                        variant={isRecommended ? "primary" : "secondary"}
+                                                                        className={classNames(
+                                                                            "w-full",
+                                                                            isRecommended &&
+                                                                            "bg-neutral-300! border-neutral-400/50! hover:enabled:bg-neutral-400!",
+                                                                        )}
+                                                                        icon={
+                                                                            <DownloadIcon
+                                                                                size={
+                                                                                    14
+                                                                                }
+                                                                            />
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            download.text
+                                                                        }
+                                                                    </Button>
+                                                                </a>
+                                                            ) : (
+                                                                <Button
+                                                                    variant="secondary"
+                                                                    className="w-full cursor-not-allowed opacity-60"
+                                                                    disabled
+                                                                >
+                                                                    {download.text}
+                                                                </Button>
+                                                            )}
+
+                                                            <span className="text-xs text-neutral-500 text-center px-1 min-h-4">
+                                                                {download.note ??
+                                                                    ""}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                })}
                                         </div>
 
                                         <p className="text-neutral-300 text-sm">
@@ -528,10 +693,11 @@ export default function Download() {
                                             )}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                );
+                            })}
                         </div>
-                    ))}
+                    </div>
+                ))}
 
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">

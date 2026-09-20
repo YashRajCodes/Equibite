@@ -1,3 +1,5 @@
+import type { Arch } from "@/types";
+
 const getUserAgent = (): string =>
     typeof window !== "undefined" ? window.navigator.userAgent : "";
 
@@ -31,4 +33,22 @@ export const isIOS = (): boolean => {
         agent.includes("ipad") ||
         agent.includes("ipod")
     );
+};
+
+interface NavigatorUAData {
+    getHighEntropyValues: (hints: string[]) => Promise<{ architecture?: string; }>;
+}
+
+export const detectArch = async (): Promise<Arch> => {
+    if (typeof window === "undefined") return "x64";
+
+    const uaData = (window.navigator as { userAgentData?: NavigatorUAData; })
+        .userAgentData;
+    try {
+        const { architecture } =
+            (await uaData?.getHighEntropyValues(["architecture"])) ?? {};
+        if (architecture) return architecture === "arm" ? "arm64" : "x64";
+    } catch { }
+
+    return /aarch64|arm/.test(getUserAgent().toLowerCase()) ? "arm64" : "x64";
 };
