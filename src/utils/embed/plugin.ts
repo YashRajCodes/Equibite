@@ -4,6 +4,7 @@ import { fetchPlugins, formatAuthors, getAvailabilityText, type Plugin } from "@
 import {
     actionRow,
     container,
+    DEFAULT_ACCENT,
     linkButton,
     section,
     separator,
@@ -16,11 +17,11 @@ import { infoEmbed } from "./pages";
 const getPluginSource = ({ filePath, isModified }: Plugin) => {
     const lower = filePath.toLowerCase();
 
-    if (isModified) return { name: "Modified", icon: "/assets/icons/equicord/modified.webp" };
-    if (lower.startsWith("src/equicordplugins")) return { name: "Equicord", icon: "/assets/icons/equicord/icon.png" };
-    if (lower.startsWith("src/plugins")) return { name: "Vencord", icon: "/assets/icons/vencord/icon.webp" };
+    if (isModified) return { name: "Modified", icon: "/assets/icons/equicord/modified.webp", color: 0xA175FF };
+    if (lower.startsWith("src/equicordplugins")) return { name: "Equicord", icon: "/assets/icons/equicord/icon.png", color: 0x2197FF };
+    if (lower.startsWith("src/plugins")) return { name: "Vencord", icon: "/assets/icons/vencord/icon.webp", color: 0xDD7878 };
 
-    return { name: "Unknown", icon: "/assets/icons/misc/userplugin.webp" };
+    return { name: "Unknown", icon: "/assets/icons/misc/userplugin.webp", color: DEFAULT_ACCENT };
 };
 
 export async function pluginsEmbed() {
@@ -51,7 +52,7 @@ export async function pluginEmbed(name: string | null) {
     const source = getPluginSource(plugin);
     const details = [
         `**Source:** ${source.name}`,
-        getAvailabilityText(plugin.name, plugin.required, plugin.target),
+        `Platforms: ${getAvailabilityText(plugin.name, plugin.required, plugin.target)}`,
         plugin.enabledByDefault && "Enabled by default",
         plugin.hasCommands && `${plugin.commands.length} command${plugin.commands.length === 1 ? "" : "s"}`,
         plugin.tags?.length && `**Tags:** ${plugin.tags.join(", ")}`,
@@ -72,5 +73,5 @@ export async function pluginEmbed(name: string | null) {
             linkButton("View Website", `${Urls.SITE_URL}/plugins/${encodeURIComponent(plugin.name)}`),
             linkButton("View Source", `https://github.com/Equicord/Equicord/tree/main/${plugin.filePath}`),
         ]),
-    ]);
+    ], source.color);
 }
